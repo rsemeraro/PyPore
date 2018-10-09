@@ -68,5 +68,9 @@ PyPore consists of the following three modules:
     To see all options, type:
     ```
     python pypore seqstats -h
-    ```        
-   ![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gi)
+    ```
+    
+    
+   ![Alt Text](https://github.com/rsemeraro/PyPore/blob/master/readme_data/Seq_summary.gif)
+   
+   
