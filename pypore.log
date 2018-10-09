@@ -1,0 +1,102 @@
+2018-10-09 10:15:17,568 - PyPore - ERROR - Missing mandatory arguments!
+2018-10-09 10:15:45,094 - PyPore - INFO - Start Main Parser
+2018-10-09 10:16:52,733 - PyPore - INFO - Start Channel Parser
+2018-10-09 10:16:52,754 - PyPore - WARNING - Channel 17 inactive!
+2018-10-09 10:16:52,755 - PyPore - WARNING - Channel 20 inactive!
+2018-10-09 10:16:52,755 - PyPore - WARNING - Channel 25 inactive!
+2018-10-09 10:16:52,756 - PyPore - WARNING - Channel 30 inactive!
+2018-10-09 10:16:52,760 - PyPore - WARNING - Channel 65 inactive!
+2018-10-09 10:16:52,762 - PyPore - WARNING - Channel 110 inactive!
+2018-10-09 10:16:52,763 - PyPore - WARNING - Channel 153 inactive!
+2018-10-09 10:16:52,763 - PyPore - WARNING - Channel 212 inactive!
+2018-10-09 10:16:52,764 - PyPore - WARNING - Channel 215 inactive!
+2018-10-09 10:16:52,766 - PyPore - WARNING - Channel 250 inactive!
+2018-10-09 10:16:52,766 - PyPore - WARNING - Channel 257 inactive!
+2018-10-09 10:16:52,767 - PyPore - WARNING - Channel 271 inactive!
+2018-10-09 10:16:52,767 - PyPore - WARNING - Channel 292 inactive!
+2018-10-09 10:16:52,768 - PyPore - WARNING - Channel 321 inactive!
+2018-10-09 10:16:52,768 - PyPore - WARNING - Channel 327 inactive!
+2018-10-09 10:16:52,768 - PyPore - WARNING - Channel 333 inactive!
+2018-10-09 10:16:52,768 - PyPore - WARNING - Channel 340 inactive!
+2018-10-09 10:16:52,769 - PyPore - WARNING - Channel 341 inactive!
+2018-10-09 10:16:52,769 - PyPore - WARNING - Channel 345 inactive!
+2018-10-09 10:16:52,770 - PyPore - WARNING - Channel 387 inactive!
+2018-10-09 10:16:52,770 - PyPore - WARNING - Channel 394 inactive!
+2018-10-09 10:16:52,770 - PyPore - WARNING - Channel 402 inactive!
+2018-10-09 10:16:52,770 - PyPore - WARNING - Channel 403 inactive!
+2018-10-09 10:16:52,771 - PyPore - WARNING - Channel 412 inactive!
+2018-10-09 10:16:52,771 - PyPore - WARNING - Channel 414 inactive!
+2018-10-09 10:16:52,772 - PyPore - WARNING - Channel 453 inactive!
+2018-10-09 10:16:55,675 - PyPore - INFO - Finish Channel Parser
+2018-10-09 10:16:57,568 - PyPore - INFO - Plotting results...
+2018-10-09 10:17:02,380 - PyPore - INFO - Finish
+2018-10-09 10:21:12,033 - PyPore - INFO - Start Main Parser
+2018-10-09 10:21:51,950 - PyPore - INFO - Start Channel Parser
+2018-10-09 10:21:51,967 - PyPore - WARNING - Channel 17 inactive!
+2018-10-09 10:21:51,968 - PyPore - WARNING - Channel 20 inactive!
+2018-10-09 10:21:51,969 - PyPore - WARNING - Channel 25 inactive!
+2018-10-09 10:21:51,970 - PyPore - WARNING - Channel 30 inactive!
+2018-10-09 10:21:51,977 - PyPore - WARNING - Channel 65 inactive!
+2018-10-09 10:21:51,978 - PyPore - WARNING - Channel 110 inactive!
+2018-10-09 10:21:51,979 - PyPore - WARNING - Channel 153 inactive!
+2018-10-09 10:21:51,980 - PyPore - WARNING - Channel 212 inactive!
+2018-10-09 10:21:51,981 - PyPore - WARNING - Channel 215 inactive!
+2018-10-09 10:21:51,982 - PyPore - WARNING - Channel 250 inactive!
+2018-10-09 10:21:51,982 - PyPore - WARNING - Channel 257 inactive!
+2018-10-09 10:21:51,983 - PyPore - WARNING - Channel 271 inactive!
+2018-10-09 10:21:51,984 - PyPore - WARNING - Channel 292 inactive!
+2018-10-09 10:21:51,984 - PyPore - WARNING - Channel 321 inactive!
+2018-10-09 10:21:51,987 - PyPore - WARNING - Channel 327 inactive!
+2018-10-09 10:21:51,989 - PyPore - WARNING - Channel 333 inactive!
+2018-10-09 10:21:52,001 - PyPore - WARNING - Channel 340 inactive!
+2018-10-09 10:21:52,012 - PyPore - WARNING - Channel 341 inactive!
+2018-10-09 10:21:52,018 - PyPore - WARNING - Channel 345 inactive!
+2018-10-09 10:21:52,027 - PyPore - WARNING - Channel 387 inactive!
+2018-10-09 10:21:52,037 - PyPore - WARNING - Channel 394 inactive!
+2018-10-09 10:21:52,041 - PyPore - WARNING - Channel 402 inactive!
+2018-10-09 10:21:52,041 - PyPore - WARNING - Channel 403 inactive!
+2018-10-09 10:21:52,042 - PyPore - WARNING - Channel 412 inactive!
+2018-10-09 10:21:52,042 - PyPore - WARNING - Channel 414 inactive!
+2018-10-09 10:21:52,042 - PyPore - WARNING - Channel 453 inactive!
+2018-10-09 10:21:54,876 - PyPore - INFO - Finish Channel Parser
+2018-10-09 10:21:56,045 - PyPore - INFO - Plotting results...
+2018-10-09 10:22:00,569 - PyPore - ERROR - Unable to move /Users/robertosemeraro/Desktop/PyPore/Unix/PyPore/mmm_pore_activity_map.html
+2018-10-09 10:22:00,881 - PyPore - ERROR - Unable to move /Users/robertosemeraro/Desktop/PyPore/Unix/PyPore/mmm_sequencing_summary.html
+2018-10-09 10:22:00,882 - PyPore - INFO - Finish
+2018-10-09 10:22:24,459 - PyPore - INFO - Start Main Parser
+2018-10-09 10:23:04,436 - PyPore - INFO - Start Channel Parser
+2018-10-09 10:23:04,450 - PyPore - WARNING - Channel 17 inactive!
+2018-10-09 10:23:04,451 - PyPore - WARNING - Channel 20 inactive!
+2018-10-09 10:23:04,451 - PyPore - WARNING - Channel 25 inactive!
+2018-10-09 10:23:04,452 - PyPore - WARNING - Channel 30 inactive!
+2018-10-09 10:23:04,452 - PyPore - WARNING - Channel 65 inactive!
+2018-10-09 10:23:04,453 - PyPore - WARNING - Channel 110 inactive!
+2018-10-09 10:23:04,454 - PyPore - WARNING - Channel 153 inactive!
+2018-10-09 10:23:04,455 - PyPore - WARNING - Channel 212 inactive!
+2018-10-09 10:23:04,455 - PyPore - WARNING - Channel 215 inactive!
+2018-10-09 10:23:04,456 - PyPore - WARNING - Channel 250 inactive!
+2018-10-09 10:23:04,456 - PyPore - WARNING - Channel 257 inactive!
+2018-10-09 10:23:04,457 - PyPore - WARNING - Channel 271 inactive!
+2018-10-09 10:23:04,457 - PyPore - WARNING - Channel 292 inactive!
+2018-10-09 10:23:04,458 - PyPore - WARNING - Channel 321 inactive!
+2018-10-09 10:23:04,458 - PyPore - WARNING - Channel 327 inactive!
+2018-10-09 10:23:04,458 - PyPore - WARNING - Channel 333 inactive!
+2018-10-09 10:23:04,458 - PyPore - WARNING - Channel 340 inactive!
+2018-10-09 10:23:04,458 - PyPore - WARNING - Channel 341 inactive!
+2018-10-09 10:23:04,458 - PyPore - WARNING - Channel 345 inactive!
+2018-10-09 10:23:04,460 - PyPore - WARNING - Channel 387 inactive!
+2018-10-09 10:23:04,460 - PyPore - WARNING - Channel 394 inactive!
+2018-10-09 10:23:04,460 - PyPore - WARNING - Channel 402 inactive!
+2018-10-09 10:23:04,460 - PyPore - WARNING - Channel 403 inactive!
+2018-10-09 10:23:04,461 - PyPore - WARNING - Channel 412 inactive!
+2018-10-09 10:23:04,461 - PyPore - WARNING - Channel 414 inactive!
+2018-10-09 10:23:04,461 - PyPore - WARNING - Channel 453 inactive!
+2018-10-09 10:23:07,539 - PyPore - INFO - Finish Channel Parser
+2018-10-09 10:23:08,504 - PyPore - INFO - Plotting results...
+2018-10-09 10:23:13,224 - PyPore - ERROR - Unable to move /Users/robertosemeraro/Desktop/PyPore/Unix/PyPore/mmm_pore_activity_map.html
+2018-10-09 10:23:13,469 - PyPore - ERROR - Unable to move /Users/robertosemeraro/Desktop/PyPore/Unix/PyPore/mmm_sequencing_summary.html
+2018-10-09 10:23:13,470 - PyPore - INFO - Finish
+2018-10-09 10:24:40,505 - PyPore - INFO - Start Main Parser
+2018-10-09 10:25:24,198 - PyPore - INFO - Finish
+2018-10-09 10:31:43,570 - PyPore - INFO - Start Main Parser
+2018-10-09 10:32:26,246 - PyPore - INFO - Finish
