@@ -42,7 +42,7 @@ def ArgsReader(args):
     else:
         out_dir = 'PyPore_results'
     ags=[work_dir, FileFolder, prefix, out_dir, str(ver), str(fastq_flag)]
-    Popen(['mpirun', '-np', str(th), 'python', './lib/seq_routines.py'] + ags).wait()   
+    Popen(['mpiexec', '-np', str(th), 'python', './lib/seq_routines.py'] + ags).wait()   
 
 
 ldir = tempfile.mkdtemp()
