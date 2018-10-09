@@ -69,8 +69,10 @@ PyPore consists of the following three modules:
     ```
     python pypore seqstats -h
     ```
-    
-    
+    **Interactive Summaries**
    ![Alt Text](https://github.com/rsemeraro/PyPore/blob/master/readme_data/Seq_summary.gif)
+   **Sequencing_summary.html**
+   ![Alt Text](https://github.com/rsemeraro/PyPore/blob/master/readme_data/pore_map.gif)
+   **pore_activity_map.html**
    
    
