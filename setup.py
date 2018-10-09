@@ -3,7 +3,7 @@ from setuptools import setup
 setup(name='PyPore',
       version='0.1',
       description='A python scripts suite for the analysis and alignment of Nanopore data.',
-      url='https://github.com/rsemeraro/XomeBlender',
+      url='https://github.com/rsemeraro/PyPore',
       author='Roberto Semeraro',
       author_email='robe.semeraro@gmail.com',
       license='LICENSE.txt',
