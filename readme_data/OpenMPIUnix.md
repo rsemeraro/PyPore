@@ -1,5 +1,5 @@
 [:arrow_left:](https://github.com/rsemeraro/PyPore/blob/master/README.md)
-
+---
 ## Installation of OpenMPI
 
 Open MPI is an open source MPI-2 implementation that is developed and maintained by a
