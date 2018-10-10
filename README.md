@@ -1,5 +1,6 @@
 # PyPore
 Pypore is a python tool box for fast and accurate quality control, conversion and alignment of nanopore sequencing data, in their raw format (Fast5). We developed PyPore as a command-line tool composed by three modules (`seqstats`, `fastqgen` and `alignment`), each provided with a set of specific options. PyPore comes out with a nice interactive result representation function, based on the plotly library, in order to allow user to zoom and pan the result summary getting information related to a specific experimental point.
+---
 ## Requirements
 - [HDF5](http://www.hdfgroup.org/HDF5/)
 - OpenMPI
@@ -13,8 +14,8 @@ Pypore is a python tool box for fast and accurate quality control, conversion an
   - python_dateutil
   - ntpath
   - pysam
+---  
 ## Installation
----
 #### Dependencies
 Before proceeding with PyPore installation, check for HDF5 and OpenMPI dependencies.
 1. In order to check if HDF5 library is already present, type:
@@ -38,7 +39,6 @@ Before proceeding with PyPore installation, check for HDF5 and OpenMPI dependenc
 1. For **Linux** or other Unix distributions the HDF5 library can be found in `libhdf5-dev` package. Make sure that you have the development headers, as they are usually not installed by default.
 1. For **Windows** users the HDF5 library installer can be downloaded from [here](https://support.hdfgroup.org/HDF5/release/obtain518.html).
 1. In order to install the OpenMPI library, refer to the following manuals for [Mac](https://github.com/rsemeraro/PyPore/blob/master/readme_data/MPI_mac.md), [Unix/Unix Like](https://github.com/rsemeraro/PyPore/blob/master/readme_data/OpenMPIUnix.md) and [Windows](https://github.com/rsemeraro/PyPore/blob/master/readme_data/MPI_Win.md) respectively.
----
 #### PyPore
 1. Clone the PyPore repository:
 
@@ -55,6 +55,7 @@ Before proceeding with PyPore installation, check for HDF5 and OpenMPI dependenc
     cd PyPore
     python setup.py install
     ```
+---    
 ## Usage
 PyPore consists of the following three modules:
 - ### seqstats
