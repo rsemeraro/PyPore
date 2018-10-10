@@ -102,3 +102,11 @@ PyPore consists of the following three modules:
     ```
     python pypore alignment -i input_1.fastq -r reference.fasta -l sample_label -a b m n -s yes
     ```
+    To see all options, type:
+    ```
+    python pypore alignment -h
+    ```
+    <p align="center">    
+        <b>Interactive Summary</b>
+    </p>    
+    
