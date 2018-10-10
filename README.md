@@ -94,4 +94,8 @@ PyPore consists of the following three modules:
     python pypore fastqgen -h
     ```
 - ### alignment     
-   The last feature of our tool consist of an alignment module based on three state-of-the-art long-read aligners and able to generate an interactive resulting summary, reporting the error rate for each error category (snp, indel, S.V), the mapped sequences fraction for size-binned reads and the experimental coverage distribution along reference genome. 
+   The last feature of our tool consist of an alignment module based on three state-of-the-art long-read aligners and able to generate an interactive resulting summary, reporting the error rate for each error category (snp, indel, SV), the mapped sequences fraction for size-binned reads and the experimental coverage distribution along reference genome. The basic syntax is:
+    ```
+    python pypore alignment -i input_1.fastq input_2.fastq -r reference.fasta -l sample_label
+    ```
+    As input you can pass a single or multiple fastq, optionally, it is possible to obtain an HTML summary file, by means of argument `—-alignment_stats`, or/and to customize the aligners list, composed by minimap2, bwa and ngmlr , removing some of them or editing their execution order `—aligner`.
