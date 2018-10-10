@@ -111,3 +111,4 @@ PyPore consists of the following three modules:
     </p>
     
     ![Alt Text](https://github.com/rsemeraro/PyPore/blob/master/readme_data/alignment_summary.gif)
+    _**alignment_stats.html**_
