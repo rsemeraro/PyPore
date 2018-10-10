@@ -113,5 +113,4 @@ PyPore consists of the following three modules:
 
 
 
-<object data="https://github.com/rsemeraro/PyPore/blob/master/readme_data/new_test_sequencing_summary.html"></object>
-  
+<iframe width="560" height="315" src="https://github.com/rsemeraro/PyPore/blob/master/readme_data/new_test_sequencing_summary.html" frameborder="0" allowfullscreen></iframe>
