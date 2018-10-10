@@ -1,6 +1,6 @@
 # PyPore
 Pypore is a python tool box for fast and accurate quality control, conversion and alignment of nanopore sequencing data, in their raw format (Fast5). We developed PyPore as a command-line tool composed by three modules (`seqstats`, `fastqgen` and `alignment`), each provided with a set of specific options. PyPore comes out with a nice interactive result representation function, based on the plotly library, in order to allow user to zoom and pan the result summary getting information related to a specific experimental point.
----
+
 ## Requirements
 - [HDF5](http://www.hdfgroup.org/HDF5/)
 - OpenMPI
