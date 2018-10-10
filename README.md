@@ -112,3 +112,6 @@ PyPore consists of the following three modules:
     
     ![Alt Text](https://github.com/rsemeraro/PyPore/blob/master/readme_data/alignment_summary.gif)
     _**alignment_stats.html**_
+## Contacts
+
+This program has been developed by Roberto Semeraro, Department of Experimental and Clinical Medicine, University of Florence
