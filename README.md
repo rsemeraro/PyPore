@@ -58,11 +58,11 @@ Before proceeding with PyPore installation, check for HDF5 and OpenMPI dependenc
 ## Usage
 PyPore consists of the following three modules:
 - #### seqstats
-   Seqstats provides an interface to explore the information related to a dataset of Fast5 files and to, optionally, convert and gather them in FastQ data. The basic syntax is:
+   `Seqstats` provides an interface to explore the information related to a dataset of Fast5 files and to, optionally, convert and gather them in FastQ data. The basic syntax is:
     ```
     python pypore seqstats -i Files/Folder -l sample_label
     ```
-    By means of `--fastq` and `--threads_number` options, it is possible to activate the fastq generation and to use multiple process to speed up the analysis. 
+    By means of `--fastq` and `--threads_number` options, it is possible to activate the fastq generation and to use multiple processors to speed up analysis. 
     ```
     python pypore seqstats -i Files/Folder -l sample_label --threads_number 8 --fastq yes
     ```
@@ -79,5 +79,12 @@ PyPore consists of the following three modules:
     _**sequencing_summary.html**_
     ![Alt Text](https://github.com/rsemeraro/PyPore/blob/master/readme_data/pore_map.gif)
     _**pore_activity_map.html**_
-   
-   
+- #### fastqgen 
+    `Fastqgen` is a faster alternative to seqstats, for FastQ generation, allowing user to convert data without wasting time in multiple parsing. The basic syntax is:
+    ```
+    python pypore fastqgen -i Files/Folder -l sample_label
+    ```
+    By means `--threads_number` option, it is possible to use multiple processors to speed up conversion.
+        ```
+    python pypore fastqgen -i Files/Folder -l sample_label --threads_number 8
+    ```
