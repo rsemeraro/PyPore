@@ -84,7 +84,11 @@ PyPore consists of the following three modules:
     ```
     python pypore fastqgen -i Files/Folder -l sample_label
     ```
-    By means `--threads_number` option, it is possible to use multiple processors to speed up conversion.    
+    By means of `--threads_number` option, it is possible to use multiple processors to speed up conversion.    
     ```
     python pypore fastqgen -i Files/Folder -l sample_label --threads_number 8
+    ```
+    To see all options, type:
+    ```
+    python pypore fastqgen -h
     ```
