@@ -1,5 +1,5 @@
 [:arrow_left:](https://github.com/rsemeraro/PyPore/blob/master/README.md)
-
+---
 ## Installation of OpenMPI on MAC OS X
 
 Message Passing Interface (MPI) is an application interface that allows processes to communicate by sending and receiving messages. In essence, it facilitates communication when multiple computers/processors/cores are performing distributed calculations. For people familiar with computer clusters, MPI is the interface that helps the compute nodes talk to each other in parallel computations. I won't provide detailed information about MPI and programming practices for using MPI here, but rather the purpose of this page is to help you install one of the freely available MPI implementations ( **Open MPI** ) on a computer running Mac OS X.
