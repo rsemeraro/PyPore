@@ -93,3 +93,4 @@ PyPore consists of the following three modules:
     ```
     python pypore fastqgen -h
     ```
+- ### alignment     
