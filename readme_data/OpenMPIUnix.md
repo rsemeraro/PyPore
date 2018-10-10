@@ -1,4 +1,4 @@
-[:arrow_left:](https://github.com/rsemeraro/PyPore/blob/master/Readme.md)
+[:arrow_left:](https://github.com/rsemeraro/PyPore/blob/master/README.md)
 
 ## Installation of OpenMPI
 
