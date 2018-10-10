@@ -14,7 +14,7 @@ Pypore is a python tool box for fast and accurate quality control, conversion an
   - python_dateutil
   - ntpath
   - pysam
----  
+
 ## Installation
 #### Dependencies
 Before proceeding with PyPore installation, check for HDF5 and OpenMPI dependencies.
@@ -55,7 +55,7 @@ Before proceeding with PyPore installation, check for HDF5 and OpenMPI dependenc
     cd PyPore
     python setup.py install
     ```
----    
+ 
 ## Usage
 PyPore consists of the following three modules:
 - ### seqstats
