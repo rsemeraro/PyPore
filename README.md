@@ -37,7 +37,7 @@ Before proceeding with PyPore installation, check for HDF5 and OpenMPI dependenc
     ```
 1. For **Linux** or other Unix distributions the HDF5 library can be found in `libhdf5-dev` package. Make sure that you have the development headers, as they are usually not installed by default.
 1. For **Windows** users the HDF5 library installer can be downloaded from [here](https://support.hdfgroup.org/HDF5/release/obtain518.html).
-1. In order to install the OpenMPI library, refer to the following manuals for [Mac](other_file.md), [Unix/Unix Like](https://github.com/rsemeraro/PyPore/blob/master/readme_data/OpenMPIUnix.md) and [Windows]() respectively.
+1. In order to install the OpenMPI library, refer to the following manuals for [Mac](https://github.com/rsemeraro/PyPore/blob/master/readme_data/MPI_Mac.md), [Unix/Unix Like](https://github.com/rsemeraro/PyPore/blob/master/readme_data/OpenMPIUnix.md) and [Windows](https://github.com/rsemeraro/PyPore/blob/master/readme_data/MPI_Win.md) respectively.
 ---
 #### PyPore
 1. Clone the PyPore repository:
