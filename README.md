@@ -97,7 +97,7 @@ PyPore consists of the following three modules:
     ```
     python pypore fastqgen -h
     ```
-- ### alignment     
+- alignment     
    The last feature of our tool consist of an alignment module based on three state-of-the-art long-read aligners and able to generate an interactive resulting summary. The basic syntax is:
     ```
     python pypore alignment -i input_1.fastq input_2.fastq -r reference.fasta -l sample_label
