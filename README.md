@@ -14,6 +14,8 @@ Pypore is a python tool box for fast and accurate quality control, conversion an
   - python_dateutil
   - ntpath
   - pysam
+
+#### For Unix/OS X users only 
 - [samtools](http://www.htslib.org/download/)  
 - [minimap2](https://github.com/lh3/minimap2)
 - [BWA](https://sourceforge.net/projects/bio-bwa/files/)
