@@ -21,6 +21,8 @@ Pypore is a python tool box for fast and accurate quality control, conversion an
 - [BWA](https://sourceforge.net/projects/bio-bwa/files/)
 - [ngmlr](https://github.com/philres/ngmlr)
 
+###### Windows distribution comes out with precompiled samtools and minimap2 versions
+
 ## Installation
 #### Dependencies
 Before proceeding with PyPore installation, check for HDF5 and OpenMPI dependencies.
