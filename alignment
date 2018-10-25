@@ -603,19 +603,21 @@ def ngmlral():
                                          stdout=subprocess.PIPE)
             PairDict = sam_parser(ngmlrline, ngmlr_ext_dir)
         else:
-            sam_nglmr_file = os.path.join(ngmlr_ext_dir, (prefix + '.sam'))
+            sam_ngmlr_file = os.path.join(ngmlr_ext_dir, (prefix + '.sam'))
             log.debug(
                 '[Alignment][ngmlral] - ngmlr -t %s -r %s -q %s -o %s -x ont' % (th, ref, fast_Q_file, sam_ngmlr_file))
+            #with open(sam_ngmlr_file,"w") as out:
             ngmlrline = subprocess.Popen(
                 ['ngmlr', '-t', str(th), '-r', str(ref), '-q', str(fast_Q_file), '-o', str(sam_ngmlr_file), '-x ont'],
-                stdout=subprocess.PIPE)
+                stdout=subprocess.PIPE).communicate()
             outputfilebam = os.path.join(ngmlr_ext_dir, (prefix + '.tmp.bam'))
-            log.debug('[Alignment][ngmlral] - samtools view -Sb -@ %s %s -o %s' % (th, sam_nglmr_file, outputfilebam))
-            pysam.view("-Sb", "-@%s" % str(th), sam_nglmr_file, "-o%s" % outputfilebam, catch_stdout=False)
-            os.remove(sam_nglmr_file)
+            log.debug('[Alignment][ngmlral] - samtools view -Sb -@ %s %s -o %s' % (th, sam_ngmlr_file, outputfilebam))
+            pysam.view("-Sb", "-@%s" % str(th), sam_ngmlr_file, "-o%s" % outputfilebam, catch_stdout=False)
+            os.remove(sam_ngmlr_file)
             pysam.sort(outputfilebam, "-o%s" % bam_ngmlr_file, catch_stdout=False)
             log.debug('[Alignment][ngmlral] - samtools index %s -@%s' % (bam_ngmlr_file, str(th)))
             pysam.index(bam_ngmlr_file, "-@%s" % str(th), catch_stdout=False)
+            os.remove(outputfilebam)
     else:
         log.warning('[Alignment][ngmlral] - file %s already exists!' % bam_ngmlr_file)
     try:
