@@ -8,7 +8,8 @@ import subprocess
 import sys
 import time
 from time import time
-
+warnings.filterwarnings('ignore', category=RuntimeWarning)
+warnings.filterwarnings('ignore', category=UserWarning)
 import plotly
 import plotly.graph_objs as go
 import pysam
@@ -16,8 +17,6 @@ from lib.logging_module import log
 from numpy import sort, digitize, arange, diff, argmax, mean
 from plotly import tools
 import lib
-
-warnings.filterwarnings('ignore', category=RuntimeWarning)
 
 class Consumer(multiprocessing.Process):
     def __init__(self, task_queue, result_queue, main='.'):
@@ -524,10 +523,10 @@ def minimap2al():
             log.debug('[Alignment][minimap2al] - minimap2 -ax map-ont --MD -L -t %s -R %s %s %s > %s' % (
             th, str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)), str(mmi_ref),
             str(fast_Q_file), str(sam_mm2_file)))
-            minimap2line = subprocess.Popen(['minimap2', '-ax', 'map-ont', '--MD', '-L', '-t', str(th), '-R',
-                                             str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)),
-                                             str(mmi_ref), str(fast_Q_file), '>', str(sam_mm2_file)],
-                                            stdout=subprocess.PIPE)
+            with open(sam_mm2_file,"w") as out:
+                minimap2line = subprocess.Popen(['minimap2', '-ax', 'map-ont', '--MD', '-L', '-t', str(th), '-R',
+                                                 str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)),
+                                                 str(mmi_ref), str(fast_Q_file)], stdout=out).communicate()
             outputfilebam = os.path.join(mm_ext_dir, (prefix + '.tmp.bam'))
             log.debug('[Alignment][minimap2al] - samtools view -Sb -@ %s %s -o %s' % (th, sam_mm2_file, outputfilebam))
             pysam.view("-Sb", "-@%s" % str(th), sam_mm2_file, "-o%s" % outputfilebam, catch_stdout=False)
@@ -535,10 +534,16 @@ def minimap2al():
             pysam.sort(outputfilebam, "-o%s" % bam_mm2_file, catch_stdout=False)
             log.debug('[Alignment][minimap2al] - samtools index %s -@%s' % (bam_mm2_file, str(th)))
             pysam.index(bam_mm2_file, "-@%s" % str(th), catch_stdout=False)
+            os.remove(outputfilebam)
     else:
         log.warning('[Alignment][minimap2al] - file %s already exists!' % bam_mm2_file)
     try:
-        shutil.move(mm_ext_dir, os.path.join(work_dir, out_dir))
+        if not os.path.exists( os.path.join(work_dir, out_dir, 'minimap2_alignments')):
+            shutil.move(mm_ext_dir, os.path.join(work_dir, out_dir))
+        else:
+            for f in os.listdir(mm_ext_dir):
+                shutil.move(os.path.join(mm_ext_dir,f), os.path.join(work_dir, out_dir, 'minimap2_alignments'))
+            shutil.rmtree(mm_ext_dir, ignore_errors=True)     
     except shutil.Error:
         log.error("Unable to move %s" % mm_ext_dir)
 
@@ -547,6 +552,9 @@ def bwaal():
     bwa_ext_dir = os.path.join(work_dir, 'bwa_alignments')
     if not os.path.exists(bwa_ext_dir):
         os.makedirs(bwa_ext_dir)
+    if os.path.splitext(ref)[1] not in ['.fasta', '.fa']:
+        log.warning('[Alignment][bwaal] - reference file seems to be not in fasta format!')
+        sys.exit(1)         
     bam_bwa_file = os.path.join(bwa_ext_dir, (prefix + '.bam'))
     if not os.path.exists(bam_bwa_file):
         if stats_trigger in ['y', 'yes']:
@@ -557,9 +565,8 @@ def bwaal():
         else:
             sam_bwa_file = os.path.join(bwa_ext_dir, (prefix + '.sam'))
             log.debug('[Alignment][bwaal] - bwa mem -x ont2d -t %s %s %s > %s' % (th, ref, fast_Q_file, sam_bwa_file))
-            bwaline = subprocess.Popen(
-                ['bwa', 'mem', '-x', 'ont2d', '-t', str(th), str(ref), str(fast_Q_file), '>', str(sam_bwa_file)],
-                stdout=subprocess.PIPE)
+            with open(sam_bwa_file,"w") as out:
+                bwaline = subprocess.Popen(['bwa', 'mem', '-x', 'ont2d', '-t', str(th), str(ref), str(fast_Q_file)], stdout=out).communicate()            
             outputfilebam = os.path.join(bwa_ext_dir, (prefix + '.tmp.bam'))
             log.debug('[Alignment][bwaal] - samtools view -Sb -@ %s %s -o %s' % (th, sam_bwa_file, outputfilebam))
             pysam.view("-Sb", "-@%s" % str(th), sam_bwa_file, "-o%s" % outputfilebam, catch_stdout=False)
@@ -567,10 +574,16 @@ def bwaal():
             pysam.sort(outputfilebam, "-o%s" % bam_bwa_file, catch_stdout=False)
             log.debug('[Alignment][bwaal] - samtools index %s -@%s' % (bam_bwa_file, str(th)))
             pysam.index(bam_bwa_file, "-@%s" % str(th), catch_stdout=False)
+            os.remove(outputfilebam)
     else:
         log.warning('[Alignment][bwaal] - file %s already exists!' % bam_bwa_file)
     try:
-        shutil.move(bwa_ext_dir, os.path.join(work_dir, out_dir))
+        if not os.path.exists(os.path.join(work_dir, out_dir, 'bwa_alignments')):
+            shutil.move(bwa_ext_dir, os.path.join(work_dir, out_dir))
+        else:
+            for f in os.listdir(bwa_ext_dir):
+                shutil.move(os.path.join(bwa_ext_dir,f), os.path.join(work_dir, out_dir, 'bwa_alignments'))
+            shutil.rmtree(bwa_ext_dir, ignore_errors=True)    
     except shutil.Error:
         log.error("Unable to move %s" % bwa_ext_dir)
 
@@ -579,6 +592,9 @@ def ngmlral():
     ngmlr_ext_dir = os.path.join(work_dir, 'ngmlr_alignments')
     if not os.path.exists(ngmlr_ext_dir):
         os.makedirs(ngmlr_ext_dir)
+    if os.path.splitext(ref)[1] not in ['.fasta', '.fa']:
+        log.warning('[Alignment][ngmlral] - reference file seems to be not in fasta format!')
+        sys.exit(1)     
     bam_ngmlr_file = os.path.join(ngmlr_ext_dir, (prefix + '.bam'))
     if not os.path.exists(bam_ngmlr_file):
         if stats_trigger in ['y', 'yes']:
@@ -603,7 +619,12 @@ def ngmlral():
     else:
         log.warning('[Alignment][ngmlral] - file %s already exists!' % bam_ngmlr_file)
     try:
-        shutil.move(ngmlr_ext_dir, os.path.join(work_dir, out_dir))
+        if not os.path.exists(os.path.join(work_dir, out_dir, 'ngmlr_alignments')):
+            shutil.move(ngmlr_ext_dir, os.path.join(work_dir, out_dir))
+        else:
+            for f in os.listdir(ngmlr_ext_dir):
+                shutil.move(os.path.join(ngmlr_ext_dir,f), os.path.join(work_dir, out_dir, 'ngmlr_alignments'))
+            shutil.rmtree(ngmlr_ext_dir, ignore_errors=True)     
     except shutil.Error:
         log.error("Unable to move %s" % ngmlr_ext_dir)
 
