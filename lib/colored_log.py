@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
+import os
 from copy import copy
 from logging import Formatter
+
+os.system('')
 
 MAPPING = {
     'DEBUG'   : 37, # white

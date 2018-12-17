@@ -35,14 +35,19 @@ def ArgsReader(args):
     th = args.threads
     ver = args.verbose
     fastq_flag = False
+    summary_flag = False
     if args.fastq[0] in ['y', 'yes']:
         fastq_flag = True
     if args.output_dir is not None:
         out_dir = str(args.output_dir[0])
     else:
         out_dir = 'PyPore_results'
-    ags=[work_dir, FileFolder, prefix, out_dir, str(ver), str(fastq_flag)]
-    Popen(['mpiexec', '-np', str(th), 'python', './lib/seq_routines.py'] + ags).wait()   
+    albacore_file = args.albacore_summary
+    if albacore_file != None:
+        summary_flag = True
+
+    ags=[work_dir, FileFolder, prefix, out_dir, str(ver), str(fastq_flag), str(th), str(summary_flag), str(albacore_file)]
+    Popen(['python', os.path.join('lib','seq_routines.py')] + ags).wait() 
 
 
 ldir = tempfile.mkdtemp()
@@ -82,8 +87,10 @@ g.add_argument('-l', '--label', action='store', metavar='',
                help=argparse.SUPPRESS)
 f = parser.add_argument_group(title='options',
                               description='''-fq, --fastq                                                 generate fastq.gz [no]
+-a,  --albacore_summary            if provided, it is used to gather the sequencing 
+                                   informations (fastq, not fast5, folder required)                             
 -o,  --output_dir                  if omitted, generates a results directory in the 
-                                                                   current position                              
+                                                                   current position                                                                                               
 -n,  --threads_number                              number of processing threads [1]
 -v,  --verbose                     increase verbosity: 0 = warnings only, 1 = info, 
                                     2 = debug, 3 = debug on terminal. Default is no
@@ -92,6 +99,8 @@ f = parser.add_argument_group(title='options',
 ''')
 f.add_argument('-fq', '--fastq', action="store", nargs=1, metavar='',
                choices=['y', 'n', 'yes', 'no'], default = ['no'], help=argparse.SUPPRESS)
+f.add_argument('-a', '--albacore_summary', action="store", nargs=1, metavar='',
+               default = None, help=argparse.SUPPRESS)
 f.add_argument('-o', '--output_dir', action="store", nargs=1, metavar='',
                help=argparse.SUPPRESS)
 f.add_argument('-n', '--threads', action="store", type=int, default=1, metavar='',
@@ -110,5 +119,4 @@ try:
     else:
         ArgsReader(args)
 except IOError as msg:
-    parser.error(str(msg))  
-    
+    parser.error(str(msg))

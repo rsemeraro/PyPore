@@ -40,13 +40,14 @@ def ArgsReader(args):
     prefix = args.label
     th = args.threads
     ver = args.verbose
+    f_flag = args.fail_reads
     if args.output_dir is not None:
         out_dir = str(args.output_dir[0])
     else:
         out_dir = 'PyPore_results'
     num_consumers = th
-    ags=[work_dir, file_folder, prefix, out_dir, str(ver)]
-    Popen(['mpiexec', '-np', str(th), 'python', './lib/fastqmpi.py'] + ags).wait()
+    ags=[work_dir, file_folder, prefix, out_dir, str(ver), str(th), str(f_flag)]
+    Popen(['python', os.path.join('lib', 'fastqmpi.py')] + ags).wait()
 
 
 ######################
@@ -90,7 +91,8 @@ g.add_argument('-i', '--input_directory', action=readable_dir, default=ldir,
 g.add_argument('-l', '--label', action='store', metavar='',
                help=argparse.SUPPRESS)
 f = parser.add_argument_group(title='options',
-                              description='''-o, --output_dir                                    if omitted, generates a results 
+                              description='''-f, --fail_reads                                  avoid skipping of fail reads [no]
+-o, --output_dir                                    if omitted, generates a results 
                                                   directory in the current position
 -n, --threads_number                               number of processing threads [1]
 -v, --verbose                      increase verbosity: 0 = warnings only, 1 = info, 
@@ -98,6 +100,8 @@ f = parser.add_argument_group(title='options',
                                                     verbosity. No number means info
 -h, --help                                          show this help message and exit
 ''')
+f.add_argument('-f', '--fail_reads', action="store", nargs='*', default=['n'], metavar='',
+               help=argparse.SUPPRESS, choices=['y', 'n', 'yes', 'no'])
 f.add_argument('-o', '--output_dir', action="store", nargs=1, metavar='',
                help=argparse.SUPPRESS)
 f.add_argument('-n', '--threads', action="store", type=int, default=1, metavar='',
