@@ -3,13 +3,10 @@ Pypore is a python tool box for fast and accurate quality control, conversion an
 
 ## Requirements
 - [HDF5](http://www.hdfgroup.org/HDF5/)
-- OpenMPI
 - python 2.7
   - biopython
-  - mpi4py
   - numpy
   - h5py
-  - h5py_cache
   - plotly
   - python_dateutil
   - ntpath
@@ -25,7 +22,7 @@ Pypore is a python tool box for fast and accurate quality control, conversion an
 
 ## Installation
 #### Dependencies
-Before proceeding with PyPore installation, check for HDF5 and OpenMPI dependencies.
+Before proceeding with PyPore installation, check for HDF5 dependencies.
 1. In order to check if HDF5 library is already present, type:
    ```
    h5cc -showconfig
@@ -46,18 +43,11 @@ Before proceeding with PyPore installation, check for HDF5 and OpenMPI dependenc
     ```
 1. For **Linux** or other Unix distributions the HDF5 library can be found in `libhdf5-dev` package. Make sure that you have the development headers, as they are usually not installed by default.
 1. For **Windows** users the HDF5 library installer can be downloaded from [here](https://support.hdfgroup.org/HDF5/release/obtain518.html).
-1. In order to install the OpenMPI library, refer to the following manuals for [Mac](https://github.com/rsemeraro/PyPore/blob/master/readme_data/MPI_mac.md), [Unix/Unix Like](https://github.com/rsemeraro/PyPore/blob/master/readme_data/OpenMPIUnix.md) and [Windows](https://github.com/rsemeraro/PyPore/blob/master/readme_data/MPI_Win.md) respectively.
 #### PyPore
 1. Clone the PyPore repository:
-
-    * **Unix** or **OS X**
-       ```
-       git clone https://github.com/rsemeraro/PyPore
-       ```
-    * **Windows**
-       ```
-       git clone --single-branch -b Windows https://github.com/rsemeraro/PyPore.git
-       ```
+    ```
+    git clone https://github.com/rsemeraro/PyPore
+    ```
 1. Install as root:
     ```
     cd PyPore
