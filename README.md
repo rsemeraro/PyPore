@@ -69,6 +69,10 @@ PyPore consists of the following three modules:
     ```
     python pypore seqstats -i Files/Folder -l sample_label --threads_number 8 --fastq yes
     ```
+    To use `seqstats` with the test_data, go to the PyPore folder and type:
+    ```
+    pypore seqstats -i test_folder/test_dataset -l my_test -fq yes -n 3
+    ``
     To see all options, type:
     ```
     python pypore seqstats -h
