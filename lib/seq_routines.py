@@ -1,5 +1,7 @@
 import multiprocessing, threading
 import sys, os, shutil, traceback, re, ntpath, random, warnings
+warnings.filterwarnings('ignore', category=RuntimeWarning)
+warnings.filterwarnings('ignore', category=UserWarning)
 import time
 from numpy import sort, mean
 from Bio.SeqUtils import GC
@@ -7,8 +9,6 @@ from Bio import SeqIO
 import plotly
 import plotly.graph_objs as go
 from logging_module import log
-warnings.filterwarnings('ignore', category=RuntimeWarning)
-warnings.filterwarnings('ignore', category=UserWarning)
 
 ####################
 ## Define classes ##
