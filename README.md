@@ -45,9 +45,13 @@ Before proceeding with PyPore installation, check for HDF5 dependencies.
 1. For **Windows** users the HDF5 library installer can be downloaded from [here](https://support.hdfgroup.org/HDF5/release/obtain518.html).
 #### PyPore
 1. Clone the PyPore repository:
-    ```
-    git clone https://github.com/rsemeraro/PyPore
-    ```
+    * PyPore
+       ```
+       git clone https://github.com/rsemeraro/PyPore
+       ```
+    * PyPore with test data (170Mb)
+       ```
+       git clone --single-branch -b Benchmark https://github.com/rsemeraro/PyPore.git
 1. Install as root:
     ```
     cd PyPore
@@ -64,6 +68,10 @@ PyPore consists of the following three modules:
     By means of `--fastq/-fq` and `--threads_number/-n` options, it is possible to activate the fastq generation and to use multiple processors to speed up analysis. 
     ```
     python pypore seqstats -i Files/Folder -l sample_label --threads_number 8 --fastq yes
+    ```
+    To use `seqstats` with the test_data, go to the PyPore folder and type:
+    ```
+    pypore seqstats -i test_folder/test_dataset -l my_test -fq yes -n 3
     ```
     To see all options, type:
     ```
