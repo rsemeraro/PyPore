@@ -1,7 +1,7 @@
 import os
 from setuptools import setup
 
-reqs = ['numpy==1.15.0', 'h5py==2.8.0', 'plotly==2.7.0', 'python_dateutil==2.7.3', 'ntpath', 'biopython']
+reqs = ['numpy==1.15.0', 'h5py>=2.8.0', 'plotly==2.7.0', 'python_dateutil==2.7.3', 'ntpath', 'biopython']
 
 if os.name != 'nt':
     reqs = reqs + ['pysam==0.13']
