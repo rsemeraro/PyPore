@@ -51,7 +51,7 @@ Before proceeding with PyPore installation, check for HDF5 dependencies.
        ```
     * PyPore with test data (170Mb)
        ```
-       git clone https://github.com/rsemeraro/PyPore.git
+       git clone --single-branch -b Benchmark https://github.com/rsemeraro/PyPore.git
 1. Install as root:
     ```
     cd PyPore
