@@ -980,21 +980,25 @@ def summary_module(fqfolder, summary_table_file, size):
     FastStats(ChannelDict, main_GC_list)         
 
 
-if __name__ == '__main__':
-
-    if not len(sys.argv) > 4:
+def run(arguments):
+    global summary_flag
+    global RefTime
+    global work_dir
+    global prefix
+    global out_dir
+    if not len(arguments) > 4:
         sys.exit(1)   
-    work_dir = sys.argv[1]
-    file_folder = sys.argv[2]
-    prefix = sys.argv[3]
-    out_dir = sys.argv[4]
-    ver = sys.argv[5]
+    work_dir = arguments[0]
+    file_folder = arguments[1]
+    prefix = arguments[2]
+    out_dir = arguments[3]
+    ver = arguments[4]
     tmp_dir = os.path.join(work_dir, '.sts_temp')
-    Fast_flag = eval(sys.argv[6])
-    size = int(sys.argv[7])
-    summary_flag = eval(sys.argv[8])
+    Fast_flag = eval(arguments[5])
+    size = int(arguments[6])
+    summary_flag = eval(arguments[7])
     if summary_flag == True:
-        summary_table = eval(sys.argv[9])[0]
+        summary_table = eval(arguments[8])[0]
 
     log.info('Start Main Parser')
     verbosity(ver)
