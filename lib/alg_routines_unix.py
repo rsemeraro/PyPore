@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import argparse
 import multiprocessing
+import multiprocessing.queues
 import os, re, shutil, sys, time, warnings
 import subprocess
 from time import time
@@ -9,12 +10,76 @@ warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 import plotly
 import plotly.graph_objs as go
 from plotly import tools
-from lib.logging_module import log
+from logging_module import log
 from numpy import sort, digitize, arange, diff, argmax, mean
 from numpy import diff as diff__
 #import lib
-import pysam
+if os.name != 'nt':
+    import pysam
+from IPython import embed
 
+class SharedCounter(object):
+    """ A synchronized shared counter.
+    The locking done by multiprocessing.Value ensures that only a single
+    process or thread may read or write the in-memory ctypes object. However,
+    in order to do n += 1, Python performs a read followed by a write, so a
+    second process may read the old value before the new one is written by the
+    first process. The solution is to use a multiprocessing.Lock to guarantee
+    the atomicity of the modifications to Value.
+    This class comes almost entirely from Eli Bendersky's blog:
+    http://eli.thegreenplace.net/2012/01/04/shared-counter-with-pythons-multiprocessing/
+    """
+
+    def __init__(self, n = 0):
+        self.count = multiprocessing.Value('i', n)
+
+    def increment(self, n = 1):
+        """ Increment the counter by n (default = 1) """
+        with self.count.get_lock():
+            self.count.value += n
+
+    @property
+    def value(self):
+        """ Return the value of the counter """
+        return self.count.value
+
+
+class Queue(multiprocessing.queues.Queue):
+    """ A portable implementation of multiprocessing.Queue.
+    Because of multithreading / multiprocessing semantics, Queue.qsize() may
+    raise the NotImplementedError exception on Unix platforms like Mac OS X
+    where sem_getvalue() is not implemented. This subclass addresses this
+    problem by using a synchronized shared counter (initialized to zero) and
+    increasing / decreasing its value every time the put() and get() methods
+    are called, respectively. This not only prevents NotImplementedError from
+    being raised, but also allows us to implement a reliable version of both
+    qsize() and empty().
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(Queue, self).__init__(*args, **kwargs)
+        self.size = SharedCounter(0)
+
+    def put(self, *args, **kwargs):
+        self.size.increment(1)
+        super(Queue, self).put(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        self.size.increment(-1)
+        return super(Queue, self).get(*args, **kwargs)
+
+    def qsize(self):
+        """ Reliable implementation of multiprocessing.Queue.qsize() """
+        return self.size.value
+
+    def empty(self):
+        """ Reliable implementation of multiprocessing.Queue.empty() """
+        return not self.qsize()
+
+    def clear(self):
+        """ Remove all elements from the Queue. """
+        while not self.empty():
+            self.get()
 
 class Consumer(multiprocessing.Process):
     def __init__(self, task_queue, result_queue, main='.'):
@@ -36,7 +101,110 @@ class Consumer(multiprocessing.Process):
             self.task_queue.task_done()
             self.result_queue.put(answer)
         return
+      
+class error_calc_w32(object):
+    def __init__(self, sampled_data, header_lines, file_number, mpc_out_dir, samp_pref):
+        self.sampled_data = sampled_data
+        self.header_lines = header_lines
+        self.file_number = file_number
+        self.mpc_out_dir = mpc_out_dir
+        self.samp_pref = samp_pref
+        self.tmpdir = 'alg.tmp'
 
+    def __call__(self):
+        variants_dict = {k: [] for k in ['M', 'I', 'D']}
+        RCounter = []
+        SeenNames = set()
+        pos_dict = {k: {} for k in arange(0, 250000000, 1000000)}
+        unmapped = []
+        file_out = os.path.join(str(self.tmpdir), str(self.samp_pref) + '.tmp.' + str(self.file_number) + '.sam')
+        file = open(file_out, mode='wb')
+        for hl in self.header_lines:
+            if hl != '':
+                file.write(hl)
+        for ll in self.sampled_data:
+            if ll.strip() is not '':
+                file.write(ll)
+                pair = ll.strip().split()
+                flag = pair[1]
+                if int(flag) not in [272, 256]:
+                    a_cigar = pair[5]
+                    map_quality = int(pair[4])
+                    chrome = str(pair[2])
+                    read_name = str(pair[0])
+                    read_len = len(pair[9])
+                    most_left = int(pair[3])
+                    if read_name not in SeenNames:
+                        SeenNames.add(read_name)
+                        if chrome in map(str, range(1, 23)) + map(lambda x: 'chr' + str(x), range(1, 23)):
+                            kkk = pos_dict.get(most_left,
+                                               pos_dict[min(pos_dict.keys(), key=lambda k: abs(k - most_left))])
+                            kkk[chrome] = kkk.get(chrome, []) + [read_len]
+                        SClip = 0
+                        if a_cigar != '*':
+                            try:
+                                SClip = int(re.findall("[0-9]*S", a_cigar)[0][:-1])
+                            except:
+                                log.debug('[Alignment][error_calc] - No soft clipping for this read...')
+                                continue
+                            a_tags = dict([(x[:2], x.split(':')[-1]) for x in pair[11:]])
+                            mdgsub = re.sub("([\\^]*[ACGT]+)[0]*", " \\1 ", a_tags['MD']).split()
+                            MissMatchesDelsPos = miss_match_founder(mdgsub, SClip)
+                            Insertions = parseCIGAR(a_cigar, SClip)
+                            for p, e, s in MissMatchesDelsPos:
+                                variants_dict[str(e)].append((p, s))
+                            variants_dict['I'].extend(list(Insertions))
+                            RCounter.append([read_name, read_len, map_quality])
+                        else:
+                            unmapped.append([read_name, read_len, map_quality])
+        file.close()
+        outputfilebam = os.path.join(str(self.tmpdir), str(self.samp_pref) + '.tmp.' + str(self.file_number) + '.bam')
+        log.debug('[Alignment][error_calc] - samtools view -Sb %s -o %s' % (file_out, outputfilebam))
+        samviewline = subprocess.Popen([os.path.abspath(os.path.dirname(__file__)) + '\SAMtools\samtools.exe', 'view', '-Sb', file_out, '-o', outputfilebam], stdout=subprocess.PIPE).communicate()
+        os.remove(file_out)
+        outputfilebamsorted = os.path.join(str(self.tmpdir), str(self.samp_pref) + '.' + str(self.file_number) + '.bam')
+        log.debug('[Alignment][error_calc] - samtools sort %s -o %s' % (outputfilebam, outputfilebamsorted))
+        samsortline = subprocess.Popen([os.path.abspath(os.path.dirname(__file__)) + '\SAMtools\samtools.exe', 'sort', outputfilebam, '-o', outputfilebamsorted], stdout=subprocess.PIPE).communicate()
+        os.remove(outputfilebam)
+        bins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800,
+                900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000, 25000, 30000, 35000,
+                40000, 45000, 50000, 100000, 200000, 300000, 400000, 500000, 750000, 1000000000]
+        d_lengths = {}
+        d_unm = {}
+        r_lengths = map(lambda x: int(x[1]), RCounter)
+        if len(unmapped) > 0:
+            unm_lengths = map(int, zip(*unmapped)[1])
+            binned_unm_data = digitize(unm_lengths, bins)
+            for l in binned_unm_data:
+                d_unm[bins[l]] = d_unm.get(bins[l], 0) + 1
+        else:
+            d_unm = {k: 0 for k in bins}
+        binned_lengths_data = digitize(r_lengths, bins)
+        mapped_frac_size = []
+        for l in binned_lengths_data:
+            d_lengths[bins[l]] = d_lengths.get(bins[l],
+                                               0) + 1  ## Conto le read di lunghezza bins[l] e le storo in un dizionario con la lunghezza come chiave
+        for le in sorted(set(d_lengths.keys() + d_unm.keys())):
+            mapped_frac_size.append(
+                [le, d_lengths.get(le, 0), d_unm.get(le, 0)])  # creo righe con lunghezza e conte per mapped e unmapped
+        d_lengths = dict(zip(sorted(d_lengths.keys()),
+                             [sum(zip(*sorted(d_lengths.iteritems(), reverse=True))[1][:i]) for i in
+                              range(1, len(zip(*sorted(d_lengths.iteritems(), reverse=True))[1]) + 1)][::-1]))
+        OutDict = {k: {} for k in ['M', 'I', 'D']}
+        from numpy import diff as diff__
+        for ev in ['I', 'M', 'D']:
+            d_somme = {}
+            binned_data = digitize(map(int, (zip(*variants_dict[str(ev)])[0])), bins)
+            for index, vi in enumerate(binned_data):
+                d_somme[bins[vi]] = d_somme.get(bins[vi], 0) + int(variants_dict[str(ev)][index][1])
+            bin_sizes = [sort(d_somme.keys())[0]] + list(diff__(sort(d_somme.keys())))
+            for i, kv in enumerate(sorted(d_somme.iteritems())):
+                kkk = OutDict.get(ev)
+                kkk[str(kv[0])] = kkk.get(str(kv[0]), []) + [int(bin_sizes[i]), int(
+                    d_lengths.get(kv[0], d_lengths[min(d_lengths.keys(), key=lambda k: abs(k - int(kv[0])))])),
+                                                             int(kv[1])]
+        out_data = [pos_dict, OutDict, mapped_frac_size, outputfilebamsorted]
+        return (out_data)
 
 class error_calc(object):
     def __init__(self, sampled_data, header_lines, file_number):
@@ -223,6 +391,8 @@ def plot_stats(out_dict, s_unmap, s_map, c_c_dict, odir):
             'rgb(204,204,0)']
 
     chromosmes = map(lambda x: 'chr' + str(x), range(1, 23))
+    if 'chr' not in c_c_dict.keys()[0]:
+        chromosmes = map(str, range(1, 23))    
     last_pos = 0
     c_counter = 0
     difference = 0
@@ -473,7 +643,7 @@ def sam_parser(bwastdout, out_dir):
 
 def error_wrap(pl, hl, fl):
     Q = multiprocessing.JoinableQueue()
-    R = multiprocessing.Queue()
+    R = Queue()
     consumers = [Consumer(Q, R)
                  for ix in xrange(th)]
     for w in consumers:
@@ -635,15 +805,16 @@ def verbosity(ver):
         lib.logging_module.ch.setLevel(lib.logging_module.logging.DEBUG)
 
 
-if __name__ == '__main__':
-    if not len(sys.argv) > 7:
-        sys.exit(1)     
-    work_dir = sys.argv[1]
-    fast_Q_file = sys.argv[2]
-    ref = sys.argv[3]
-    stats_trigger = sys.argv[4]
-    prefix = sys.argv[5]
-    out_dir = sys.argv[6]
-    als = sys.argv[7]
-    th = int(sys.argv[8])
+def run(arguments):
+    if not len(arguments) > 7:
+        sys.exit(1)
+    global work_dir, fast_Q_file, out_dir, ref, th, prefix, stats_trigger        
+    work_dir = arguments[0]
+    fast_Q_file = arguments[1]
+    ref = arguments[2]
+    stats_trigger = arguments[3]
+    prefix = arguments[4]
+    out_dir = arguments[5]
+    als = arguments[6]
+    th = int(arguments[7])
     als_parser(als)

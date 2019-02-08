@@ -84,18 +84,18 @@ def fastq_writer(tmp_dir):
 
  
 
-if __name__ == '__main__':   
-
-    if not len(sys.argv) > 4:
-        sys.exit(1)   
-    work_dir = sys.argv[1]
-    file_folder = sys.argv[2]
-    prefix = sys.argv[3]
-    out_dir = sys.argv[4]
-    ver = sys.argv[5]
+def run(arguments):   
+    if not len(arguments) > 4:
+        sys.exit(1)
+    global work_dir, file_folder, prefix, out_dir  
+    work_dir = arguments[0]
+    file_folder = arguments[1]
+    prefix = arguments[2]
+    out_dir = arguments[3]
+    ver = arguments[4]
     tmp_dir = os.path.join(work_dir, '.sts_temp')
-    size = int(sys.argv[6])
-    f_flag = eval(sys.argv[7])[0]
+    size = int(arguments[5])
+    f_flag = eval(arguments[6])[0]
 
     fail_flag = False
     if f_flag in ['y', 'yes']:

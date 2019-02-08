@@ -12,17 +12,17 @@ import ctypes
 from time import time
 from logging_module import log
 
-if __name__ == '__main__':
-    if not len(sys.argv) > 7:
+def run(arguments):
+    if not len(arguments) > 7:
         sys.exit(1)     
-    work_dir = sys.argv[1]
-    fast_Q_file = sys.argv[2]
-    ref = sys.argv[3]
-    stats_trigger = sys.argv[4]
-    prefix = sys.argv[5]
-    out_dir = sys.argv[6]
-    als = sys.argv[7]
-    th = int(sys.argv[8])
+    work_dir = arguments[0]
+    fast_Q_file = os.path.abspath(arguments[1])
+    ref = arguments[2]
+    stats_trigger = arguments[3]
+    prefix = arguments[4]
+    out_dir = arguments[5]
+    als = arguments[6]
+    th = int(arguments[7])
     warnings.filterwarnings('ignore', category=UserWarning)
     warnings.filterwarnings('ignore', category=RuntimeWarning)
     import plotly
@@ -342,22 +342,22 @@ if __name__ == '__main__':
         for line in file_list:
             file.write(os.path.join(work_dir, line) + '\n')
         file.close()
-        bammergeline = subprocess.Popen(['lib\SAMtools\samtools.exe', 'merge', '-cp', '-@', str(th), '-b', bamsfile, finalfile], stdout=subprocess.PIPE).communicate()
+        bammergeline = subprocess.Popen([os.path.abspath(os.path.dirname(__file__)) +'\SAMtools\samtools.exe', 'merge', '-cp', '-@', str(th), '-b', bamsfile, finalfile], stdout=subprocess.PIPE).communicate()
         for b in file_list:
             os.remove(b)
         os.remove(bamsfile)
         log.debug('[Alignment][minimap2al] - samtools index %s' % (finalfile))
-        samindexline = subprocess.Popen(['lib\SAMtools\samtools.exe', 'index', finalfile], stdout=subprocess.PIPE).communicate()
+        samindexline = subprocess.Popen([os.path.abspath(os.path.dirname(__file__)) + '\SAMtools\samtools.exe', 'index', finalfile], stdout=subprocess.PIPE).communicate()
         for f in os.listdir(tmpdir):
-        try:
-            shutil.move(os.path.join(tmpdir,f), os.path.join(work_dir, out_dir))
-        except shutil.Error:
-            log.error("Unable to move %s" % tmpdir,f)            
+            try:
+                shutil.move(os.path.join(tmpdir,f), os.path.join(work_dir, out_dir))
+            except shutil.Error:
+                log.error("Unable to move %s" % tmpdir,f)            
         shutil.rmtree(tmpdir, ignore_errors=True)
     
     
     def error_wrap(pl, hl, fl):
-        from MPC import Consumer, error_calc
+        from alg_routines_unix import Consumer, error_calc_w32
         os.mkdir(tmpdir)
         ctypes.windll.kernel32.SetFileAttributesW(tmpdir, 2)
         Q = multiprocessing.JoinableQueue()
@@ -369,7 +369,7 @@ if __name__ == '__main__':
         joblists = range(fl[0], fl[1] + 1)
         for p in range(len(joblists)):
             if len(pl[p]) > 0:
-                Q.put(error_calc(pl[p], hl, joblists[p], out_dir, prefix))
+                Q.put(error_calc_w32(pl[p], hl, joblists[p], out_dir, prefix))
         for ix in xrange(th):
             Q.put(None)
         Q.join()
@@ -390,7 +390,7 @@ if __name__ == '__main__':
         mmi_ref = os.path.splitext(ref)[0] + '.mmi'
         if not os.path.exists(mmi_ref):
             log.debug('[Alignment][minimap2al] - minimap2 -x map-ont -t %s -d %s %s' % (th, mmi_ref, ref))
-            miniline = ('lib\minimap2\minimap2.exe -x map-ont -t', str(th), '-d', str(mmi_ref), str(ref))
+            miniline = (os.path.abspath(os.path.dirname(__file__)) + '\minimap2\minimap2.exe -x map-ont -t', str(th), '-d', str(mmi_ref), str(ref))
             minrun = ' '.join(miniline)
             subprocess.Popen(minrun, stdout=subprocess.PIPE, shell=True).wait()
         bam_mm2_file = os.path.join(mm_ext_dir, (prefix + '.bam'))
@@ -399,7 +399,7 @@ if __name__ == '__main__':
                 log.debug('[Alignment][minimap2al] - minimap2 -ax map-ont --MD -L -t %s -R %s %s %s' % (
                 th, str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)), str(mmi_ref),
                 str(fast_Q_file)))
-                minimap2line = subprocess.Popen(['lib\minimap2\minimap2.exe', '-ax', 'map-ont', '--MD', '-L', '-t', str(th), '-R', str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)), str(mmi_ref), str(fast_Q_file)], stdout=subprocess.PIPE)
+                minimap2line = subprocess.Popen([os.path.abspath(os.path.dirname(__file__)) + '\minimap2\minimap2.exe', '-ax', 'map-ont', '--MD', '-L', '-t', str(th), '-R', str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)), str(mmi_ref), str(fast_Q_file)], stdout=subprocess.PIPE)
                 PairDict = sam_parser(minimap2line, mm_ext_dir)
             else:
                 sam_mm2_file = os.path.join(mm_ext_dir, (prefix + '.sam'))
@@ -407,16 +407,16 @@ if __name__ == '__main__':
                 th, str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)), str(mmi_ref),
                 str(fast_Q_file), str(sam_mm2_file)))
                 with open(sam_mm2_file,"w") as out:
-                minimap2line = subprocess.Popen(['lib\minimap2\minimap2.exe', '-ax', 'map-ont', '--MD', '-L', '-t', str(th), '-R',
-                                                 str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)),
-                                                 str(mmi_ref), str(fast_Q_file)], stdout=out).communicate()                            
+                    minimap2line = subprocess.Popen([os.path.abspath(os.path.dirname(__file__)) + '\minimap2\minimap2.exe', '-ax', 'map-ont', '--MD', '-L', '-t', str(th), '-R',
+                                                     str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)),
+                                                     str(mmi_ref), str(fast_Q_file)], stdout=out).communicate()                            
                 outputfilebam = os.path.join(mm_ext_dir, (prefix + '.tmp.bam'))
                 log.debug('[Alignment][minimap2al] - samtools view -Sb -@ %s %s -o %s' % (th, sam_mm2_file, outputfilebam))
-                samviewline = subprocess.Popen(['lib\SAMtools\samtools.exe', 'view', '-Sb', '-@', str(th), sam_mm2_file, '-o', outputfilebam], stdout=subprocess.PIPE).communicate()
+                samviewline = subprocess.Popen([os.path.abspath(os.path.dirname(__file__)) + '\SAMtools\samtools.exe', 'view', '-Sb', '-@', str(th), sam_mm2_file, '-o', outputfilebam], stdout=subprocess.PIPE).communicate()
                 os.remove(sam_mm2_file)
-                samsortline = subprocess.Popen(['lib\SAMtools\samtools.exe', 'sort', '-@', str(th), outputfilebam, '-o', bam_mm2_file], stdout=subprocess.PIPE).communicate()
+                samsortline = subprocess.Popen([os.path.abspath(os.path.dirname(__file__)) + '\SAMtools\samtools.exe', 'sort', '-@', str(th), outputfilebam, '-o', bam_mm2_file], stdout=subprocess.PIPE).communicate()
                 log.debug('[Alignment][minimap2al] - samtools index %s -@%s' % (bam_mm2_file, str(th)))
-                samindexline = subprocess.Popen(['lib\SAMtools\samtools.exe', 'index', bam_mm2_file], stdout=subprocess.PIPE).communicate()
+                samindexline = subprocess.Popen([os.path.abspath(os.path.dirname(__file__)) +'\SAMtools\samtools.exe', 'index', bam_mm2_file], stdout=subprocess.PIPE).communicate()
                 os.remove(outputfilebam)
         else:
             log.warning('[Alignment][minimap2al] - file %s already exists!' % bam_mm2_file)
