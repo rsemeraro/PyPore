@@ -63,19 +63,19 @@ PyPore consists of the following three modules:
 - ### seqstats
    `seqstats` provides an interface to explore the information related to a dataset of Fast5 files and to, optionally, convert and gather them in FastQ data. The basic syntax is:
     ```
-    pypore seqstats -i Files/Folder -l sample_label
+    python pypore seqstats -i Files/Folder -l sample_label
     ```
     By means of `--fastq/-fq` and `--threads_number/-n` options, it is possible to activate the fastq generation and to use multiple processors to speed up analysis. 
     ```
-    pypore seqstats -i Files/Folder -l sample_label --threads_number 8 --fastq yes
+    python pypore seqstats -i Files/Folder -l sample_label --threads_number 8 --fastq yes
     ```
     To use `seqstats` with the **test_data**, go to the PyPore folder and type:
     ```
-    pypore seqstats -i test_folder/test_dataset -l my_test -fq yes -n 3
+    python pypore seqstats -i test_folder/test_dataset -l my_test -fq yes -n 3
     ```
     To see all options, type:
     ```
-    pypore seqstats -h
+    python pypore seqstats -h
     ```
     <p align="center">    
         <b>Interactive Summaries</b>
@@ -89,28 +89,28 @@ PyPore consists of the following three modules:
 - ### fastqgen 
     `fastqgen` is a faster alternative to seqstats, for FastQ generation, allowing user to convert data without wasting time in multiple parsing. The basic syntax is:
     ```
-    pypore fastqgen -i Files/Folder -l sample_label
+    python pypore fastqgen -i Files/Folder -l sample_label
     ```
     By means of `--threads_number/-n` option, it is possible to use multiple processors to speed up conversion.    
     ```
-    pypore fastqgen -i Files/Folder -l sample_label -n 8
+    python pypore fastqgen -i Files/Folder -l sample_label -n 8
     ```
     To see all options, type:
     ```
-    pypore fastqgen -h
+    python pypore fastqgen -h
     ```
 - ### alignment 
    The last feature of our tool consist of an alignment module based on three state-of-the-art long-read aligners and able to generate an interactive resulting summary. The basic syntax is:
     ```
-    pypore alignment -i input_1.fastq input_2.fastq -r reference.fasta -l sample_label
+    python pypore alignment -i input_1.fastq input_2.fastq -r reference.fasta -l sample_label
     ```
     As input you can pass a single or multiple fastq, optionally, it is possible to obtain an HTML summary file, by means of argument `—-alignment_stats/-s`, or/and to customize the aligners list, composed by minimap2(`m`), bwa(`b`) and ngmlr(`n`), removing some of them or editing their execution order `—-aligner/-a`.
     ```
-    pypore alignment -i input_1.fastq -r reference.fasta -l sample_label -a b m n -s yes
+    python pypore alignment -i input_1.fastq -r reference.fasta -l sample_label -a b m n -s yes
     ```
     To see all options, type:
     ```
-    pypore alignment -h
+    python pypore alignment -h
     ```
     <p align="center">    
         <b>Interactive Summary</b>
