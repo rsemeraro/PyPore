@@ -898,7 +898,7 @@ def fast5module(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size):
         i = x.split('_')[-2]
         idx = int(i)-1
         lis[idx].append(x)
-    print RefTime
+
     if not os.path.exists(os.path.join(tmp_dir)):
         os.makedirs(os.path.join(tmp_dir))   
 
