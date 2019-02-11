@@ -809,7 +809,7 @@ def min_time_catcher(f):
     import h5py
     from dateutil import parser as par
     with h5py.File(f, 'r') as f5:        
-        StartTime = f5['Analyses/Segmentation_000'].attrs['time_stamp'].decode('UTF-8')
+        StartTime = f5['UniqueGlobalKey/tracking_id'].attrs['exp_start_time'].decode('UTF-8')
     dt = par.parse(StartTime)
     StartTConv = time.mktime(dt.timetuple())
     global RefTime 
@@ -898,7 +898,7 @@ def fast5module(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size):
         i = x.split('_')[-2]
         idx = int(i)-1
         lis[idx].append(x)
-
+    print RefTime
     if not os.path.exists(os.path.join(tmp_dir)):
         os.makedirs(os.path.join(tmp_dir))   
 
@@ -982,7 +982,6 @@ def summary_module(fqfolder, summary_table_file, size):
 
 def run(arguments):
     global summary_flag
-    global RefTime
     global work_dir
     global prefix
     global out_dir
@@ -1007,6 +1006,7 @@ def run(arguments):
         os.makedirs(os.path.join(work_dir, out_dir))
 
     if summary_flag == False:
+        global RefTime
         RefTime = None 
         fast5module(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size)
     else:
