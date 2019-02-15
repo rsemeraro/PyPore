@@ -205,7 +205,7 @@ def run(arguments):
             xaxis3=dict(title='Position (bp)', anchor='y3', exponentformat='SI', domain=[0, 1], type='log',
                         hoverformat='.2s', showspikes=True, spikethickness=1.5, spikemode='across', spikecolor='grey',
                         spikedash='solid'),
-            yaxis3=dict(title='Error rate', showline=True, showspikes=False, hoverformat='.0%', tickformat='.0%'),
+            yaxis3=dict(title='Error rate', showline=True, showspikes=False, hoverformat='.1%', tickformat='.1%'),
             legend=dict(
                 x=-0.009000000000000001,
                 y=1.0222754491017962,
