@@ -61,15 +61,15 @@ Before proceeding with PyPore installation, check for HDF5 dependencies.
 ## Usage
 PyPore consists of the following three modules:
 - ### seqstats
-   `seqstats` provides an interface to explore the information related to a dataset of Fast5 files (single or multi read fast5) and to, optionally, convert and gather them in FastQ data. The basic syntax, for a set of single read Fast5 files, is:
+   `seqstats` provides an interface to explore the information related to a dataset of Fast5 files (single or multi read fast5) and to, optionally, convert and gather them in FastQ data. The basic syntax, for a set of **single read Fast5** files, is:
     ```
     pypore seqstats -i Files/Folder -l sample_label
     ```
-    Alternatively, by triggering the `--multi_read_fast5/-m` argument is it possible to run `seqstats` on a multi read Fast5 dataset:
+    Alternatively, by triggering the `--multi_read_fast5/-m` argument is it possible to run `seqstats` on a **multi read Fast5** dataset:
     ```
     pypore seqstats -i Files/Folder -l sample_label --threads_number 8 --multi_read_fast5 yes
     ```    
-    To use `seqstats` with Albacore outputs (FastQ and summary_file), an albacore summary file is requested (`--albacore_summary/-a`). By switching to albacore mode, the `seqstats` input (`-i`) become the albacore fastq directory.
+    To use `seqstats` with **Albacore outputs** (FastQ and summary_file), an albacore summary file is requested (`--albacore_summary/-a`). By switching to albacore mode, the `seqstats` input (`-i`) become the albacore fastq directory.
     ```
     pypore seqstats -i FastQFiles/Folder -l sample_label -a /path/to/summary_file.txt --threads_number 8
     ```
