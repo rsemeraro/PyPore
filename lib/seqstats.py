@@ -32,6 +32,7 @@ def ArgsReader(args):
     prefix = args.label
     th = args.threads
     ver = args.verbose
+    multi_read_flag = False
     fastq_flag = False
     summary_flag = False
     if args.fastq[0] in ['y', 'yes']:
@@ -43,8 +44,10 @@ def ArgsReader(args):
     albacore_file = args.albacore_summary
     if albacore_file != None:
         summary_flag = True
+    if args.multi_read_fast5[0] in ['y', 'yes']:
+        multi_read_flag = True    
 
-    ags=[work_dir, FileFolder, prefix, out_dir, str(ver), str(fastq_flag), str(th), str(summary_flag), str(albacore_file)]
+    ags=[work_dir, FileFolder, prefix, out_dir, str(ver), str(fastq_flag), str(th), str(summary_flag), str(albacore_file), str(multi_read_flag)]
     import lib.seq_routines as sq
     sq.run(ags)
 
@@ -86,8 +89,9 @@ University of Florence. For bug report or suggestion write to robe.semeraro@gmai
                    help=argparse.SUPPRESS)
     f = parser.add_argument_group(title='options',
                                   description='''-fq, --fastq                                                 generate fastq.gz [no]
--a,  --albacore_summary            if provided, it is used to gather the sequencing 
-                                   informations (fastq, not fast5, folder required)                             
+-a,  --albacore_summary            if provided, it is used to gather the sequencing
+                                   informations (fastq, not fast5, folder required)  
+-m,  --multi_read_fast5                  activate the multi read fast5 reading [no]                                                              
 -o,  --output_dir                  if omitted, generates a results directory in the 
                                                                    current position                                                                                               
 -n,  --threads_number                              number of processing threads [1]
@@ -100,6 +104,8 @@ University of Florence. For bug report or suggestion write to robe.semeraro@gmai
                    choices=['y', 'n', 'yes', 'no'], default = ['no'], help=argparse.SUPPRESS)
     f.add_argument('-a', '--albacore_summary', action="store", nargs=1, metavar='',
                    default = None, help=argparse.SUPPRESS)
+    f.add_argument('-m', '--multi_read_fast5', nargs=1, metavar='',
+                   choices=['y', 'n', 'yes', 'no'], default = ['no'], help=argparse.SUPPRESS)                   
     f.add_argument('-o', '--output_dir', action="store", nargs=1, metavar='',
                    help=argparse.SUPPRESS)
     f.add_argument('-n', '--threads', action="store", type=int, default=1, metavar='',
