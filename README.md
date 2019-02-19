@@ -69,7 +69,7 @@ PyPore consists of the following three modules:
     ```
     pypore seqstats -i Files/Folder -l sample_label --threads_number 8 --multi_read_fast5 yes
     ```    
-    To use `seqstats` with Albacore outputs (FastQ and summary_file), you can activate the `--albacore_summary/-a` argument by typing the path to the summary file. By switching to albacore mode, the requested input (`-i`) become the albacore fastq directory.
+    To use `seqstats` with Albacore outputs (FastQ and summary_file), an albacore summary file is requested (`--albacore_summary/-a`). By switching to albacore mode, the `seqstats` input (`-i`) become the albacore fastq directory.
     ```
     pypore seqstats -i FastQFiles/Folder -l sample_label -a /path/to/summary_file.txt --threads_number 8
     ```
