@@ -9,7 +9,7 @@ from Bio import SeqIO
 import plotly
 import plotly.graph_objs as go
 from logging_module import log
-
+from IPython import embed
 ####################
 ## Define classes ##
 ####################
@@ -137,6 +137,8 @@ def FastStats(ChannelOut, GCTable = None):
     BiggestRead = max(MaxMinvec)
     MeanReadLength = round(mean(map(float, map(lambda x: HoursDict[str(x)][2],
                                                sort([int(k) for k, v in HoursDict.items() if v != [0, 0]])))), 1)
+    TotalThroughput = sum(map(float, map(lambda x: HoursDict[str(x)][2],
+                                                   sort([int(k) for k, v in HoursDict.items() if v != [0, 0]]))))                                               
     sortingindex = [y[0] for y in sorted(enumerate(map(int, HoursDict.keys())), key=lambda z: z[1])]
     SortKeys = [HoursDict.keys()[y] for y in sortingindex]
     HoursDict = [HoursDict[y] for y in SortKeys]
@@ -202,23 +204,23 @@ def FastStats(ChannelOut, GCTable = None):
         yaxis='y5'
     )
 
-    val = [[FailSum + PassSum], [PassSum], [FailSum], [MeanReadLength], [SmallestRead], [BiggestRead]]
+    val = [[FailSum + PassSum], [PassSum], [FailSum], [TotalThroughput], [MeanReadLength], [SmallestRead], [BiggestRead]]
     log.debug('Plotting table...')
     table = go.Table(
         type='table',
-        columnorder=[1, 2, 3, 4, 5, 6],
-        columnwidth=[5] * 6,
+        columnorder=[1, 2, 3, 4, 5, 6, 7],
+        columnwidth=[5] * 7,
         visible=True,
         domain={'x': [0, 1], 'y': [0, .12]},
-        header=dict(values=[['<b>READS TOTAL <br> NUMBER</b>'], ['<b>PASS</b>'], ['<b>FAIL</b>'],
+        header=dict(values=[['<b>READS TOTAL <br> NUMBER</b>'], ['<b>PASS</b>'], ['<b>FAIL</b>'], ['<b>TOTAL BP</b>'],
                             ['<b>MEAN READ <br>LENGTH (bp)</b>'], ['<b>SHORTEST READ (bp)</b>'],
                             ['<b>LONGEST READ (bp)</b>']],
                     line=dict(color='#7D7F80'),
-                    align=['center'] * 6,
+                    align=['center'] * 7,
                     fill=dict(color='#00083E'),  # 00083e
                     font=dict(color='white', size=12), height=30),
         cells=dict(values=val, line=dict(color='#7D7F80'),
-                   align=['center'] * 6,
+                   align=['center'] * 7,
                    fill=dict(color='#EDEDEE'),  # EDFAFF
                    font=dict(color='#506784', size=12), height=25))
 
@@ -301,9 +303,9 @@ def HeatTrigger(html_file):
                 tb[0], tb[1], tb[2]))
         sys.exit(1)
     if summary_flag == False:
-        FixLine = "<script type='text/javascript'>var gd = document.getElementById('%(FileId)s');gd.on('plotly_click', function(data){var infotext = data.points.map(function(d){return (d.text)});var divname = data.points.map(function(d){return (d.data.name)});if(divname == 'ReadNHeat' || divname == 'BaseNHeat'){function range(start, stop, step){var a=[start], b=start;while(b<stop){b+=step;a.push(b)}return a;};var editindeces=range(10*(infotext-1), 10*infotext, 1); editindeces.pop(); var numeroPerguntas = 5122; var anyBoxesChecked = new Array(numeroPerguntas).fill(false); for (i in editindeces) { idx = parseInt(editindeces[i]); anyBoxesChecked[idx]=true}; var Newtitle = {title: 'Channel ' + infotext.toString()}; if (gd.data[0].visible === true) {var hv=[true, false]} else {var hv=[false, true]}; var exit = hv.concat(anyBoxesChecked); var update = {'visible': exit}; Plotly.update(gd ,update, Newtitle);};});gd.on('plotly_hover', function(data){var divname = data.points.map(function(d){return (d.data.name)});if(divname == 'Pore1' || divname == 'Pore2' || divname == 'Pore3' || divname == 'Pore4'){if(data.xvals){Plotly.Fx.hover(gd, {xval:data.xvals[0] }, ['x3y2', 'x3y3']);}}});</script>" % locals()
+        FixLine = "<script type='text/javascript'>var gd = document.getElementById('%(FileId)s');gd.on('plotly_click', function(data){var infotext = data.points.map(function(d){return (d.text)});var divname = data.points.map(function(d){return (d.data.name)}); var chan = data.points.map(function(d){return (d.text.split(' ')[1].replace('<br', ''))}); if(divname == 'ReadNHeat' || divname == 'BaseNHeat'){function range(start, stop, step){var a=[start], b=start;while(b<stop){b+=step;a.push(b)}return a;};var editindeces=range(10*(chan-1), 10*chan, 1); editindeces.pop(); var numeroPerguntas = 5122; var anyBoxesChecked = new Array(numeroPerguntas).fill(false); for (i in editindeces) { idx = parseInt(editindeces[i]); anyBoxesChecked[idx]=true}; var Newtitle = {title: infotext.toString()}; if (gd.data[0].visible === true) {var hv=[true, false]} else {var hv=[false, true]}; var exit = hv.concat(anyBoxesChecked); var update = {'visible': exit}; Plotly.update(gd ,update, Newtitle);};});gd.on('plotly_hover', function(data){var divname = data.points.map(function(d){return (d.data.name)});if(divname == 'Pore1' || divname == 'Pore2' || divname == 'Pore3' || divname == 'Pore4'){if(data.xvals){Plotly.Fx.hover(gd, {xval:data.xvals[0] }, ['x3y2', 'x3y3']);}}});</script>" % locals()  
     else:
-        FixLine = "<script type='text/javascript'>var gd = document.getElementById('%(FileId)s');gd.on('plotly_click', function(data){var infotext = data.points.map(function(d){return (d.text)});var divname = data.points.map(function(d){return (d.data.name)});if(divname == 'ReadNHeat' || divname == 'BaseNHeat'){function range(start, stop, step){var a=[start], b=start;while(b<stop){b+=step;a.push(b)}return a;};var editindeces=range(4*(infotext-1), 4*infotext, 1); editindeces.pop(); var numeroPerguntas = 2050; var anyBoxesChecked = new Array(numeroPerguntas).fill(false); for (i in editindeces) { idx = parseInt(editindeces[i]); anyBoxesChecked[idx]=true}; var Newtitle = {title: 'Channel ' + infotext.toString()}; if (gd.data[0].visible === true) {var hv=[true, false]} else {var hv=[false, true]}; var exit = hv.concat(anyBoxesChecked); var update = {'visible': exit}; Plotly.update(gd ,update, Newtitle);};});gd.on('plotly_hover', function(data){var divname = data.points.map(function(d){return (d.data.name)});if(divname == 'Channel'){if(data.xvals){Plotly.Fx.hover(gd, {xval:data.xvals[0] }, ['x3y2', 'x3y3']);}}});</script>" % locals()
+        FixLine = "<script type='text/javascript'>var gd = document.getElementById('%(FileId)s');gd.on('plotly_click', function(data){var infotext = data.points.map(function(d){return (d.text)});var divname = data.points.map(function(d){return (d.data.name)}); var chan = data.points.map(function(d){return (d.text.split(' ')[1].replace('<br', ''))}); if(divname == 'ReadNHeat' || divname == 'BaseNHeat'){function range(start, stop, step){var a=[start], b=start;while(b<stop){b+=step;a.push(b)}return a;};var editindeces=range(4*(chan-1), 4*chan, 1); editindeces.pop(); var numeroPerguntas = 2050; var anyBoxesChecked = new Array(numeroPerguntas).fill(false); for (i in editindeces) { idx = parseInt(editindeces[i]); anyBoxesChecked[idx]=true}; var Newtitle = {title: infotext.toString()}; if (gd.data[0].visible === true) {var hv=[true, false]} else {var hv=[false, true]}; var exit = hv.concat(anyBoxesChecked); var update = {'visible': exit}; Plotly.update(gd ,update, Newtitle);};});gd.on('plotly_hover', function(data){var divname = data.points.map(function(d){return (d.data.name)});if(divname == 'Channel'){if(data.xvals){Plotly.Fx.hover(gd, {xval:data.xvals[0] }, ['x3y2', 'x3y3']);}}});</script>" % locals()
     SubLine = FixLine + '</body></html>'
     pattern = re.compile('</body></html>')
     result = pattern.sub(SubLine, subject)
@@ -683,11 +685,20 @@ def result_plotting(ch_par):
                      [0.6666666666666666, 'rgb(199,234,229)'], [0.7777777777777778, 'rgb(128,205,193)'],
                      [0.8888888888888888, 'rgb(53,151,143)'], [1.0, 'rgb(1,102,94)']]
 
+    xh = map(list, zip(*NanoLayout))
+    yh = map(list, zip(*NanoPlate))
+    zh = map(list, zip(*NanoBasePlate))
+    hovertext=[[] for i in range(len(xh))]
+
+    for x1, y1 in enumerate(xh):
+        for x2, y2 in enumerate(y1):
+            hovertext[x1].append('<b>CHANNEL:</b> {}<br /><b>RN:</b> {}<br /><b>BN:</b> {}'.format(y2, yh[x1][x2], zh[x1][x2]))
+
     trace = go.Heatmap(name="ReadNHeat", z=map(list, zip(*NanoPlate)), x=range(1, 33), y=range(1, 17),
-                       text=map(list, zip(*NanoLayout)), hoverinfo="text", xgap=23, ygap=8, colorscale=owncolorscale,
+                       text=hovertext, hoverinfo="text", xgap=23, ygap=8, colorscale=owncolorscale,
                        colorbar=dict(y=0.77, len=0.470, exponentformat="SI"))  # y=0.77,
     trace1 = go.Heatmap(name="BaseNHeat", z=map(list, zip(*NanoBasePlate)), x=range(1, 33), y=range(1, 17),
-                        text=map(list, zip(*NanoLayout)), hoverinfo="text", xgap=23, ygap=8, colorscale=owncolorscale,
+                        text=hovertext, hoverinfo="text", xgap=23, ygap=8, colorscale=owncolorscale,
                         colorbar=dict(y=0.77, len=0.470, exponentformat="SI"), visible=False)
     fig = plotly.tools.make_subplots(rows=13, cols=1, shared_xaxes=False,
                                      specs=[[{'rowspan': 6}], [None], [None], [None], [None], [None], [None],
@@ -868,7 +879,7 @@ def dir_surfer(file_folder):
                 for en, fi in enumerate(files):
                     if not fi.startswith('.'):
                         f = os.path.join(subdir, fi)
-                        if en == 0 and int(os.path.basename(subdir)) == 0:
+                        if en == 0 and int(os.path.basename(subdir)) == 0 and multiread_flag == False:
                             min_time_catcher(f)
                         yield f
             else:
@@ -878,7 +889,7 @@ def dir_surfer(file_folder):
                 for en, fi in enumerate(files):
                     if not fi.startswith('.'):
                         f = os.path.join(subdir, fi)
-                        if en == 0:
+                        if en == 0 and multiread_flag == False:
                             min_time_catcher(f)
                         yield f
     else:
@@ -937,6 +948,86 @@ def fast5module(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size):
     FastStats(ChannelDict)    
 
 
+def multifast5reader(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size):    
+    import multi_read_fast5_reader as mf5r
+    ChannelDict = {str(il): () for il in range(1, 513)}
+    lis=[[] for _ in range(512)]
+    support_list=[]
+    RefStart = None
+
+    if not os.path.exists(os.path.join(tmp_dir)):
+        os.makedirs(os.path.join(tmp_dir))   
+
+    Q = multiprocessing.JoinableQueue()
+    R = multiprocessing.Queue()
+
+    process_consumers_number = [Consumer(Q, R)
+                                for ix in range(size)]
+
+    for w in process_consumers_number:
+        w.start()
+
+    c_count = 0
+
+    for en,mff in enumerate(dir_surfer(file_folder)):
+        c_count += 1
+        False_flag = False if 'fail' not in mff else True
+        Q.put(mf5r.mf5_reader(mff, en, tmp_dir, Fast_flag, False_flag))   
+
+    for i in range(size):
+        Q.put(None)
+    Q.join()
+
+    while not Q.empty():
+        Q.get()
+   
+    for r in range(en):
+        result = R.get()
+        support_list.extend(result)
+   
+    for x in support_list:
+        if type(x) is not float:
+            idx = int(x[0][0])-1
+            lis[idx].append(x[0][1:])
+        else:
+            RefStart=x     
+    
+    Q = multiprocessing.JoinableQueue()
+    R = multiprocessing.Queue()
+
+    process_consumers_number = [Consumer(Q, R)
+                                for ix in range(size)]
+
+    for w in process_consumers_number:
+        w.start()
+
+    c_count = 0
+
+    for e,chunk in enumerate(lis):
+        if chunk != []:
+            c_count += 1
+            Q.put(mf5r.channel_parser(chunk, e, RefStart))
+        else: log.warn('Channel %s inactive!' % (e))    
+
+    for i in range(size):
+        Q.put(None)
+    Q.join()
+
+    while not Q.empty():
+        Q.get()
+   
+    for r in range(c_count):
+        result = R.get()
+        ChannelDict[str(int(result[0])+1)] = result[1:]
+
+    if Fast_flag == True:
+        fastq_writer(tmp_dir)
+
+    result_plotting(ChannelDict)
+    FastStats(ChannelDict)
+
+
+
 def summary_module(fqfolder, summary_table_file, size):
     if size == 1:
         size = 2
@@ -985,6 +1076,7 @@ def run(arguments):
     global work_dir
     global prefix
     global out_dir
+    global multiread_flag
     if not len(arguments) > 4:
         sys.exit(1)   
     work_dir = arguments[0]
@@ -996,6 +1088,7 @@ def run(arguments):
     Fast_flag = eval(arguments[5])
     size = int(arguments[6])
     summary_flag = eval(arguments[7])
+    multiread_flag = eval(arguments[9])
     if summary_flag == True:
         summary_table = eval(arguments[8])[0]
 
@@ -1007,8 +1100,12 @@ def run(arguments):
 
     if summary_flag == False:
         global RefTime
-        RefTime = None 
-        fast5module(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size)
+        RefTime = None
+        if multiread_flag == False: 
+            fast5module(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size)
+        else:
+            multifast5reader(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size)    
     else:
         deamon_thread = None
         summary_module(file_folder, summary_table, size)
+

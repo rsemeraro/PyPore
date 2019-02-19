@@ -116,6 +116,9 @@ class parsing_func(object):
                 del ds
         ChrList[:] = [ChrList[z] for z in (y[0] for y in sorted(enumerate(zip(*ChrList)[1]), key=lambda z: z[1]))]
         TimeVec = map(lambda x: int(time.strftime('%H', time.localtime(float(x) - float(self.RefStart)))), zip(*ChrList)[1])
+        #print MinTime, str(self.RefStart)
+        #print ChrList
+        #print TimeVec
         for e in range(len(TimeVec)):
             hour = TimeVec[e]
             if e > 1:

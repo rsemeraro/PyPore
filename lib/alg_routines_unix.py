@@ -11,7 +11,7 @@ import plotly
 import plotly.graph_objs as go
 from plotly import tools
 from logging_module import log
-from numpy import sort, digitize, arange, diff, argmax, mean
+from numpy import sort, digitize, arange, diff, argmax, mean, asarray
 from numpy import diff as diff__
 #import lib
 if os.name != 'nt':
@@ -399,36 +399,36 @@ def plot_stats(out_dict, s_unmap, s_map, c_c_dict, odir):
     mean_val_for_axes = 0
     for idx, c in enumerate(chromosmes):
         try:
-            pos_vec = [list(x) for x in zip(*sorted(c_c_dict[str(c)], key=lambda pair: pair[0]))][0]
-            if idx > 0:
-                difference = (pos_vec[0] + last_pos) - (last_pos + 1)
-            cov_vec = [list(x) for x in zip(*sorted(c_c_dict[str(c)], key=lambda pair: pair[0]))][1]
-            if mean([mean_val_for_axes, max(cov_vec)]) > mean_val_for_axes:
-                mean_val_for_axes = mean(cov_vec)
-                mean_val_for_axes = mean([mean_val_for_axes, max(cov_vec)])
-            new_pos_vec = [i + last_pos - difference for i in pos_vec]
-            last_pos = new_pos_vec[-1]
-            GapIdx = argmax(diff(new_pos_vec))
-            rep_idxs = [GapIdx, GapIdx + 1]
-            repl = [None, None]
-            for repidx, rl in zip(rep_idxs, repl):
-                new_pos_vec[repidx] = rl
-                cov_vec[repidx] = rl
-            if idx == 11:
-                c_counter = 0
-            trace5 = go.Scatter(
-                x=new_pos_vec,
-                y=[round(i, 3) for i in cov_vec if i is not None],
-                name=str(c),
-                fill='tozeroy',
-                showlegend=False,
-                text=map(lambda x: str(x) + 'x', [round(i, 3) for i in cov_vec if i is not None]),
-                hoverinfo="x+text+name",
-                line=dict(width=0.5,
-                          color=cols[c_counter])
-            )
-            c_counter += 1
-            fig.append_trace(trace5, 3, 1)
+		    pos_vec = [list(x) for x in zip(*sorted(c_c_dict[str(c)], key=lambda pair: pair[0]))][0]
+		    if idx > 0:
+		        difference = (pos_vec[0] + last_pos) - (last_pos + 1)
+		    cov_vec = [list(x) for x in zip(*sorted(c_c_dict[str(c)], key=lambda pair: pair[0]))][1]
+		    if mean([mean_val_for_axes, max(cov_vec)]) > mean_val_for_axes:
+		        mean_val_for_axes = mean(cov_vec)
+		        mean_val_for_axes = mean([mean_val_for_axes, max(cov_vec)])
+		    new_pos_vec = [i + last_pos - difference for i in pos_vec]
+		    last_pos = new_pos_vec[-1]
+		    GapIdx = argmax(diff(new_pos_vec))
+		    rep_idxs = [GapIdx, GapIdx + 1]
+		    repl = [None, None]
+		    for repidx, rl in zip(rep_idxs, repl):
+		        new_pos_vec[repidx] = rl
+		        cov_vec[repidx] = rl
+		    if idx == 11:
+		        c_counter = 0
+		    trace5 = go.Scatter(
+		        x=new_pos_vec,
+		        y=[round(i, 3) for i in cov_vec if i is not None],
+		        name=str(c),
+		        fill='tozeroy',
+		        showlegend=False,
+		        text=map(lambda x: str(x) + 'x', [round(i, 3) for i in cov_vec if i is not None]),
+		        hoverinfo="x+text+name",
+		        line=dict(width=0.5,
+		                  color=cols[c_counter])
+		    )
+		    c_counter += 1
+		    fig.append_trace(trace5, 3, 1)
         except:
             pass
     vars_cols = ['rgba(255, 144, 14, 1)', 'rgb(255, 65, 54)', 'rgb(93, 164, 214)']
@@ -629,7 +629,7 @@ def sam_parser(bwastdout, out_dir):
     sorted_unmapfraqseq = zip(*mapped_frac_size)[3]
     for ev in OutDict.keys():
         for k, v in sorted(OutDict[ev].iteritems()):
-            OutDict[ev][k] = round(float(v[2]) / (int(v[0]) * float(v[1])), 4)
+            OutDict[ev][k] = round(float(v[2]) / (int(v[0]) * float(v[1])), 4)      
     plot_stats(OutDict, sorted_unmapfraqseq, mapped_frac_size, chr_cov_dict, out_dir)
     finalfile = os.path.join(out_dir, (prefix + '.bam'))
     bamsfile = os.path.join(out_dir, 'to_merge.txt')
@@ -692,10 +692,10 @@ def minimap2al():
             log.debug('[Alignment][minimap2al] - minimap2 -ax map-ont --MD -L -t %s -R %s %s %s > %s' % (
             th, str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)), str(mmi_ref),
             str(fast_Q_file), str(sam_mm2_file)))
-            minimap2line = subprocess.Popen(['minimap2', '-ax', 'map-ont', '--MD', '-L', '-t', str(th), '-R',
-                                             str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)),
-                                             str(mmi_ref), str(fast_Q_file), '>', str(sam_mm2_file)],
-                                            stdout=subprocess.PIPE)
+            with open(sam_mm2_file,"w") as outfile:
+		        minimap2line = subprocess.Popen(['minimap2', '-ax', 'map-ont', '--MD', '-L', '-t', str(th), '-R',
+		                                         str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)),
+		                                         str(mmi_ref), str(fast_Q_file)], stdout=outfile).wait()
             outputfilebam = os.path.join(mm_ext_dir, (prefix + '.tmp.bam'))
             log.debug('[Alignment][minimap2al] - samtools view -Sb -@ %s %s -o %s' % (th, sam_mm2_file, outputfilebam))
             pysam.view("-Sb", "-@%s" % str(th), sam_mm2_file, "-o%s" % outputfilebam, catch_stdout=False)
@@ -703,6 +703,7 @@ def minimap2al():
             pysam.sort(outputfilebam, "-o%s" % bam_mm2_file, catch_stdout=False)
             log.debug('[Alignment][minimap2al] - samtools index %s -@%s' % (bam_mm2_file, str(th)))
             pysam.index(bam_mm2_file, "-@%s" % str(th), catch_stdout=False)
+            os.remove(outputfilebam)
     else:
         log.warning('[Alignment][minimap2al] - file %s already exists!' % bam_mm2_file)
     try:
@@ -725,9 +726,8 @@ def bwaal():
         else:
             sam_bwa_file = os.path.join(bwa_ext_dir, (prefix + '.sam'))
             log.debug('[Alignment][bwaal] - bwa mem -x ont2d -t %s %s %s > %s' % (th, ref, fast_Q_file, sam_bwa_file))
-            bwaline = subprocess.Popen(
-                ['bwa', 'mem', '-x', 'ont2d', '-t', str(th), str(ref), str(fast_Q_file), '>', str(sam_bwa_file)],
-                stdout=subprocess.PIPE)
+            bwaline = subprocess.Popen(['bwa', 'mem', '-x', 'ont2d', '-t', str(th), str(ref), str(fast_Q_file), '-o', str(sam_bwa_file)],
+                                       stdout=subprocess.PIPE).wait()
             outputfilebam = os.path.join(bwa_ext_dir, (prefix + '.tmp.bam'))
             log.debug('[Alignment][bwaal] - samtools view -Sb -@ %s %s -o %s' % (th, sam_bwa_file, outputfilebam))
             pysam.view("-Sb", "-@%s" % str(th), sam_bwa_file, "-o%s" % outputfilebam, catch_stdout=False)
@@ -735,6 +735,7 @@ def bwaal():
             pysam.sort(outputfilebam, "-o%s" % bam_bwa_file, catch_stdout=False)
             log.debug('[Alignment][bwaal] - samtools index %s -@%s' % (bam_bwa_file, str(th)))
             pysam.index(bam_bwa_file, "-@%s" % str(th), catch_stdout=False)
+            os.remove(outputfilebam)
     else:
         log.warning('[Alignment][bwaal] - file %s already exists!' % bam_bwa_file)
     try:
@@ -760,7 +761,7 @@ def ngmlral():
                 '[Alignment][ngmlral] - ngmlr -t %s -r %s -q %s -o %s -x ont' % (th, ref, fast_Q_file, sam_ngmlr_file))
             ngmlrline = subprocess.Popen(
                 ['ngmlr', '-t', str(th), '-r', str(ref), '-q', str(fast_Q_file), '-o', str(sam_ngmlr_file), '-x ont'],
-                stdout=subprocess.PIPE)
+                stdout=subprocess.PIPE).wait()
             outputfilebam = os.path.join(ngmlr_ext_dir, (prefix + '.tmp.bam'))
             log.debug('[Alignment][ngmlral] - samtools view -Sb -@ %s %s -o %s' % (th, sam_nglmr_file, outputfilebam))
             pysam.view("-Sb", "-@%s" % str(th), sam_nglmr_file, "-o%s" % outputfilebam, catch_stdout=False)
@@ -768,6 +769,7 @@ def ngmlral():
             pysam.sort(outputfilebam, "-o%s" % bam_ngmlr_file, catch_stdout=False)
             log.debug('[Alignment][ngmlral] - samtools index %s -@%s' % (bam_ngmlr_file, str(th)))
             pysam.index(bam_ngmlr_file, "-@%s" % str(th), catch_stdout=False)
+            os.remove(outputfilebam)
     else:
         log.warning('[Alignment][ngmlral] - file %s already exists!' % bam_ngmlr_file)
     try:
