@@ -65,7 +65,7 @@ PyPore consists of the following three modules:
     ```
     pypore seqstats -i Files/Folder -l sample_label
     ```
-    Alternatively, by triggering the `--multi_read_fast5/-m` argument is it possible to run `seqstats` on a multi read Fast5 dataset.
+    Alternatively, by triggering the `--multi_read_fast5/-m` argument is it possible to run `seqstats` on a multi read Fast5 dataset:
     ```
     pypore seqstats -i Files/Folder -l sample_label --threads_number 8 --multi_read_fast5 yes
     ```    
