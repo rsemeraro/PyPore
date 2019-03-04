@@ -9,7 +9,7 @@ from Bio import SeqIO
 import plotly
 import plotly.graph_objs as go
 from logging_module import log
-from IPython import embed
+
 ####################
 ## Define classes ##
 ####################
@@ -277,6 +277,7 @@ def FastStats(ChannelOut, GCTable = None):
     plotly.offline.plot(fig, filename=out_html_2, auto_open=False, show_link=False, config=config)
     HeatTrigger2(out_html_2)
     log.info('Finish')
+    sys.exit()
 
 
 def HeatTrigger(html_file):
