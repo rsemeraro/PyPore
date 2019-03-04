@@ -277,6 +277,7 @@ def FastStats(ChannelOut, GCTable = None):
     plotly.offline.plot(fig, filename=out_html_2, auto_open=False, show_link=False, config=config)
     HeatTrigger2(out_html_2)
     log.info('Finish')
+    sys.exit()
 
 
 def HeatTrigger(html_file):
