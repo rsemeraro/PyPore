@@ -89,7 +89,7 @@ University of Florence. For bug report or suggestion write to robe.semeraro@gmai
                    help=argparse.SUPPRESS, choices=['y', 'n', 'yes', 'no'])
     f.add_argument('-o', '--output_dir', action="store", nargs=1, metavar='',
                    help=argparse.SUPPRESS)
-    f.add_argument('-n', '--threads', action="store", type=int, default=1, metavar='',
+    f.add_argument('-n', '--threads_number', action="store", type=int, default=1, metavar='',
                    help=argparse.SUPPRESS)
     f.add_argument('-h', '--help', action="help",
                    help=argparse.SUPPRESS)
