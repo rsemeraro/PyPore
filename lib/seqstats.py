@@ -30,7 +30,7 @@ def ArgsReader(args):
     work_dir = os.getcwd()
     FileFolder = args.input_directory
     prefix = args.label
-    th = args.threads
+    th = args.threads_number
     ver = args.verbose
     multi_read_flag = False
     fastq_flag = False
