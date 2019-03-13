@@ -137,7 +137,7 @@ def FastStats(ChannelOut, GCTable = None):
     BiggestRead = max(MaxMinvec)
     MeanReadLength = round(mean(map(float, map(lambda x: HoursDict[str(x)][2],
                                                sort([int(k) for k, v in HoursDict.items() if v != [0, 0]])))), 1)
-    TotalThroughput = sum(map(float, map(lambda x: HoursDict[str(x)][2],
+    TotalThroughput = sum(map(float, map(lambda x: HoursDict[str(x)][1],
                                                    sort([int(k) for k, v in HoursDict.items() if v != [0, 0]]))))                                               
     sortingindex = [y[0] for y in sorted(enumerate(map(int, HoursDict.keys())), key=lambda z: z[1])]
     SortKeys = [HoursDict.keys()[y] for y in sortingindex]
