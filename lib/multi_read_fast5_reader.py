@@ -95,11 +95,11 @@ class mf5_reader(object):
         DP = Pathcheck(str(f))
         Key0 = DP[0]
         Key1 = DP[1]
-        Key2 = DP[2]
         Mux = f5[Key0].attrs['start_mux']
         Channel = f5[Key1].attrs['channel_number'].decode('UTF-8')
         StartTime = f5[str(f) + '/Analyses/Segmentation_000'].attrs['time_stamp'].decode('UTF-8') 
         if F_Flag == False:
+            Key2 = DP[2]
             Key3 = DP[3]
             ReadLength = f5[Key2].attrs['sequence_length']
             QScore = f5[Key2].attrs['mean_qscore']
