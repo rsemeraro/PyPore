@@ -23,7 +23,7 @@ def MainReader(args):
         out_dir = 'PyPore_results'
     prefix = str(args.prefix)
     als = args.aligner
-    th = args.threads
+    th = args.threads_number
     ags=[work_dir, fast_Q_file, ref, stats_trigger, prefix, out_dir, als, str(th)]
     if os.name == 'nt':
         import lib.alg_routines_win as sq
