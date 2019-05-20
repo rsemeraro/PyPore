@@ -13,10 +13,8 @@ from plotly import tools
 from logging_module import log
 from numpy import sort, digitize, arange, diff, argmax, mean, asarray
 from numpy import diff as diff__
-#import lib
 if os.name != 'nt':
     import pysam
-from IPython import embed
 
 class SharedCounter(object):
     """ A synchronized shared counter.
@@ -115,7 +113,8 @@ class error_calc_w32(object):
         variants_dict = {k: [] for k in ['M', 'I', 'D']}
         RCounter = []
         SeenNames = set()
-        pos_dict = {k: {} for k in arange(0, 250000000, 1000000)}
+        chrs = contig_finder()
+        pos_dict = {k: {} for k in arange(0, chrs[1], chrs[1]/250)}
         unmapped = []
         file_out = os.path.join(str(self.tmpdir), str(self.samp_pref) + '.tmp.' + str(self.file_number) + '.sam')
         file = open(file_out, mode='wb')
@@ -136,7 +135,7 @@ class error_calc_w32(object):
                     most_left = int(pair[3])
                     if read_name not in SeenNames:
                         SeenNames.add(read_name)
-                        if chrome in map(str, range(1, 23)) + map(lambda x: 'chr' + str(x), range(1, 23)):
+                        if chrome in chrs[0]:
                             kkk = pos_dict.get(most_left,
                                                pos_dict[min(pos_dict.keys(), key=lambda k: abs(k - most_left))])
                             kkk[chrome] = kkk.get(chrome, []) + [read_len]
@@ -211,12 +210,14 @@ class error_calc(object):
         self.sampled_data = sampled_data
         self.header_lines = header_lines
         self.file_number = file_number
+        self.ref = ref
 
     def __call__(self):
         variants_dict = {k: [] for k in ['M', 'I', 'D']}
         RCounter = []
+        chrs = contig_finder()        
         SeenNames = set()
-        pos_dict = {k: {} for k in arange(0, 250000000, 1000000)}
+        pos_dict = {k: {} for k in arange(0, chrs[1], chrs[1]/250)}
         unmapped = []
         file_out = 'tmp.' + str(self.file_number) + '.sam'
         file = open(file_out, mode='wb')
@@ -237,7 +238,7 @@ class error_calc(object):
                     most_left = int(pair[3])
                     if read_name not in SeenNames:
                         SeenNames.add(read_name)
-                        if chrome in map(str, range(1, 23)) + map(lambda x: 'chr' + str(x), range(1, 23)):
+                        if chrome in chrs[0]:
                             kkk = pos_dict.get(most_left,
                                                pos_dict[min(pos_dict.keys(), key=lambda k: abs(k - most_left))])
                             kkk[chrome] = kkk.get(chrome, []) + [read_len]
@@ -334,7 +335,7 @@ def miss_match_founder(readMd, clipping):
                 yield ((MovingIndex + clipping), 'M', 1)
 
 
-def plot_stats(out_dict, s_unmap, s_map, c_c_dict, odir):
+def plot_stats(out_dict, s_unmap, s_map, c_c_dict, odir, oredered_contigs):
     fig = tools.make_subplots(rows=3, cols=2, specs=[[{}, {}], [{'colspan': 2}, None], [{'colspan': 2}, None]],
                               shared_xaxes=False,
                               shared_yaxes=False, vertical_spacing=0.1, print_grid=False)
@@ -388,16 +389,12 @@ def plot_stats(out_dict, s_unmap, s_map, c_c_dict, odir):
 
     cols = ['rgb(166,206,227)', 'rgb(31,120,180)', 'rgb(178,223,138)', 'rgb(51,160,44)', 'rgb(251,154,153)',
             'rgb(227,26,28)', 'rgb(253,191,111)', 'rgb(255,127,0)', 'rgb(202,178,214)', 'rgb(106,61,154)',
-            'rgb(204,204,0)']
-
-    chromosmes = map(lambda x: 'chr' + str(x), range(1, 23))
-    if 'chr' not in c_c_dict.keys()[0]:
-        chromosmes = map(str, range(1, 23))    
+            'rgb(204,204,0)']  
     last_pos = 0
     c_counter = 0
     difference = 0
     mean_val_for_axes = 0
-    for idx, c in enumerate(chromosmes):
+    for idx, c in enumerate(oredered_contigs):
         try:
             pos_vec = [list(x) for x in zip(*sorted(c_c_dict[str(c)], key=lambda pair: pair[0]))][0]
             if idx > 0:
@@ -528,6 +525,15 @@ def plot_stats(out_dict, s_unmap, s_map, c_c_dict, odir):
     out_stats = os.path.join(odir, (prefix + '_alignment_stats.html'))
     plotly.offline.plot(fig, filename=out_stats, auto_open=False, config=config, show_link=False)
 
+def contig_finder():
+    from Bio import SeqIO
+    contig_list = []
+    contig_lengths = []
+    for seq_record in SeqIO.parse(ref, "fasta"):
+        if not re.search(r"random|Un|hap|M$|NC_001224", seq_record.id):
+            contig_list.append(seq_record.id)
+            contig_lengths.append(len(seq_record))
+    return contig_list, max(contig_lengths)
 
 def sam_parser(bwastdout, out_dir):
     log.info('Error estimation...')
@@ -535,7 +541,8 @@ def sam_parser(bwastdout, out_dir):
             1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000, 25000, 30000, 35000, 40000,
             45000, 50000, 100000, 200000, 300000, 400000, 500000, 750000, 1000000000]
     mapped_frac_size = {k: [0, 0] for k in bins}
-    pos_dict = {k: {} for k in arange(0, 250000000, 1000000)}
+    chrs = contig_finder()
+    pos_dict = {k: {} for k in arange(0, chrs[1], chrs[1]/250)}
     OutDict = {k: {} for k in ['M', 'I', 'D']}
     header_list = []
     proc_lists = {k: [] for k in range(th)}
@@ -630,7 +637,7 @@ def sam_parser(bwastdout, out_dir):
     for ev in OutDict.keys():
         for k, v in sorted(OutDict[ev].iteritems()):
             OutDict[ev][k] = round(float(v[2]) / (int(v[0]) * float(v[1])), 4)      
-    plot_stats(OutDict, sorted_unmapfraqseq, mapped_frac_size, chr_cov_dict, out_dir)
+    plot_stats(OutDict, sorted_unmapfraqseq, mapped_frac_size, chr_cov_dict, out_dir, chrs[0])
     finalfile = os.path.join(out_dir, (prefix + '.bam'))
     bamsfile = os.path.join(out_dir, 'to_merge.txt')
     file = open(bamsfile, 'w')
@@ -638,7 +645,7 @@ def sam_parser(bwastdout, out_dir):
         file.write(os.path.join(work_dir, line) + '\n')
     file.close()
     pysam.merge("-cp", "-@%s" % str(th), "-b%s" % bamsfile, finalfile, catch_stdout=False)
-    for b in file_list:
+    for b in list(set(file_list)):
         os.remove(b)
     os.remove(bamsfile)
 
@@ -784,7 +791,6 @@ def als_parser(als):
     tooldict = {'b': bwaal,
                 'm': minimap2al,
                 'n': ngmlral}
-
     if isinstance(als, list):
         for a in als:
             log.info('[Alignment] - Start alignment with %s...' % str(tooldict.get(a)).split(' ')[1][:-2])
