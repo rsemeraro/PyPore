@@ -399,36 +399,36 @@ def plot_stats(out_dict, s_unmap, s_map, c_c_dict, odir):
     mean_val_for_axes = 0
     for idx, c in enumerate(chromosmes):
         try:
-		    pos_vec = [list(x) for x in zip(*sorted(c_c_dict[str(c)], key=lambda pair: pair[0]))][0]
-		    if idx > 0:
-		        difference = (pos_vec[0] + last_pos) - (last_pos + 1)
-		    cov_vec = [list(x) for x in zip(*sorted(c_c_dict[str(c)], key=lambda pair: pair[0]))][1]
-		    if mean([mean_val_for_axes, max(cov_vec)]) > mean_val_for_axes:
-		        mean_val_for_axes = mean(cov_vec)
-		        mean_val_for_axes = mean([mean_val_for_axes, max(cov_vec)])
-		    new_pos_vec = [i + last_pos - difference for i in pos_vec]
-		    last_pos = new_pos_vec[-1]
-		    GapIdx = argmax(diff(new_pos_vec))
-		    rep_idxs = [GapIdx, GapIdx + 1]
-		    repl = [None, None]
-		    for repidx, rl in zip(rep_idxs, repl):
-		        new_pos_vec[repidx] = rl
-		        cov_vec[repidx] = rl
-		    if idx == 11:
-		        c_counter = 0
-		    trace5 = go.Scatter(
-		        x=new_pos_vec,
-		        y=[round(i, 3) for i in cov_vec if i is not None],
-		        name=str(c),
-		        fill='tozeroy',
-		        showlegend=False,
-		        text=map(lambda x: str(x) + 'x', [round(i, 3) for i in cov_vec if i is not None]),
-		        hoverinfo="x+text+name",
-		        line=dict(width=0.5,
-		                  color=cols[c_counter])
-		    )
-		    c_counter += 1
-		    fig.append_trace(trace5, 3, 1)
+            pos_vec = [list(x) for x in zip(*sorted(c_c_dict[str(c)], key=lambda pair: pair[0]))][0]
+            if idx > 0:
+                difference = (pos_vec[0] + last_pos) - (last_pos + 1)
+            cov_vec = [list(x) for x in zip(*sorted(c_c_dict[str(c)], key=lambda pair: pair[0]))][1]
+            if mean([mean_val_for_axes, max(cov_vec)]) > mean_val_for_axes:
+                mean_val_for_axes = mean(cov_vec)
+                mean_val_for_axes = mean([mean_val_for_axes, max(cov_vec)])
+            new_pos_vec = [i + last_pos - difference for i in pos_vec]
+            last_pos = new_pos_vec[-1]
+            GapIdx = argmax(diff(new_pos_vec))
+            rep_idxs = [GapIdx, GapIdx + 1]
+            repl = [None, None]
+            for repidx, rl in zip(rep_idxs, repl):
+                new_pos_vec[repidx] = rl
+                cov_vec[repidx] = rl
+            if idx == 11:
+                c_counter = 0
+            trace5 = go.Scatter(
+                x=new_pos_vec,
+                y=[round(i, 3) for i in cov_vec if i is not None],
+                name=str(c),
+                fill='tozeroy',
+                showlegend=False,
+                text=map(lambda x: str(x) + 'x', [round(i, 3) for i in cov_vec if i is not None]),
+                hoverinfo="x+text+name",
+                line=dict(width=0.5,
+                          color=cols[c_counter])
+            )
+            c_counter += 1
+            fig.append_trace(trace5, 3, 1)
         except:
             pass
     vars_cols = ['rgba(255, 144, 14, 1)', 'rgb(255, 65, 54)', 'rgb(93, 164, 214)']
@@ -693,9 +693,9 @@ def minimap2al():
             th, str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)), str(mmi_ref),
             str(fast_Q_file), str(sam_mm2_file)))
             with open(sam_mm2_file,"w") as outfile:
-		        minimap2line = subprocess.Popen(['minimap2', '-ax', 'map-ont', '--MD', '-L', '-t', str(th), '-R',
-		                                         str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)),
-		                                         str(mmi_ref), str(fast_Q_file)], stdout=outfile).wait()
+                minimap2line = subprocess.Popen(['minimap2', '-ax', 'map-ont', '--MD', '-L', '-t', str(th), '-R',
+                                                 str('@RG\\tID:minimap2\\tLB:NxEr\\tPL:MinION\\tPU:NA\\tSM:' + str(prefix)),
+                                                 str(mmi_ref), str(fast_Q_file)], stdout=outfile).wait()
             outputfilebam = os.path.join(mm_ext_dir, (prefix + '.tmp.bam'))
             log.debug('[Alignment][minimap2al] - samtools view -Sb -@ %s %s -o %s' % (th, sam_mm2_file, outputfilebam))
             pysam.view("-Sb", "-@%s" % str(th), sam_mm2_file, "-o%s" % outputfilebam, catch_stdout=False)
