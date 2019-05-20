@@ -43,7 +43,18 @@ def run(arguments):
             lib.logging_module.log.setLevel(lib.logging_module.logging.DEBUG)
             lib.logging_module.ch.setLevel(lib.logging_module.logging.DEBUG)
     
-    def plot_stats(out_dict, s_unmap, s_map, c_c_dict, odir):
+    def contig_finder():
+        from Bio import SeqIO
+        contig_list = []
+        contig_lengths = []
+        for seq_record in SeqIO.parse(ref, "fasta"):
+            if not re.search(r"random|Un|hap|M$|NC_001224", seq_record.id):
+                contig_list.append(seq_record.id)
+                contig_lengths.append(len(seq_record))
+        return contig_list, max(contig_lengths)
+
+
+    def plot_stats(out_dict, s_unmap, s_map, c_c_dict, odir, oredered_contigs):
         fig = tools.make_subplots(rows=3, cols=2, specs=[[{}, {}], [{'colspan': 2}, None], [{'colspan': 2}, None]],
                                 shared_xaxes=False,
                                 shared_yaxes=False, vertical_spacing=0.1, print_grid=False)
@@ -97,14 +108,12 @@ def run(arguments):
     
         cols = ['rgb(166,206,227)', 'rgb(31,120,180)', 'rgb(178,223,138)', 'rgb(51,160,44)', 'rgb(251,154,153)',
                 'rgb(227,26,28)', 'rgb(253,191,111)', 'rgb(255,127,0)', 'rgb(202,178,214)', 'rgb(106,61,154)',
-                'rgb(204,204,0)']
-    
-        chromosmes = map(lambda x: 'chr' + str(x), range(1, 23))
+                'rgb(204,204,0)']    
         last_pos = 0
         c_counter = 0
         difference = 0
         mean_val_for_axes = 0
-        for idx, c in enumerate(chromosmes):
+        for idx, c in enumerate(oredered_contigs):
             pos_vec = [list(x) for x in zip(*sorted(c_c_dict[str(c)], key=lambda pair: pair[0]))][0]
             if idx > 0:
                 difference = (pos_vec[0] + last_pos) - (last_pos + 1)
@@ -240,7 +249,8 @@ def run(arguments):
                 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000, 25000, 30000, 35000, 40000,
                 45000, 50000, 100000, 200000, 300000, 400000, 500000, 750000, 1000000000]
         mapped_frac_size = {k: [0, 0] for k in bins}
-        pos_dict = {k: {} for k in arange(0, 250000000, 1000000)}
+        chrs = contig_finder()
+        pos_dict = {k: {} for k in arange(0, chrs[1], chrs[1]/250)}
         OutDict = {k: {} for k in ['M', 'I', 'D']}
         header_list = []
         proc_lists = {k: [] for k in range(th)}
@@ -335,7 +345,7 @@ def run(arguments):
         for ev in OutDict.keys():
             for k, v in sorted(OutDict[ev].iteritems()):
                 OutDict[ev][k] = round(float(v[2]) / (int(v[0]) * float(v[1])), 4)
-        plot_stats(OutDict, sorted_unmapfraqseq, mapped_frac_size, chr_cov_dict, out_dir)
+        plot_stats(OutDict, sorted_unmapfraqseq, mapped_frac_size, chr_cov_dict, out_dir, chrs[0])
         finalfile = os.path.join(tmpdir, (prefix + '.bam'))
         bamsfile = os.path.join(out_dir, 'to_merge.txt')
         file = open(bamsfile, 'w')
