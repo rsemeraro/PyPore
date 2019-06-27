@@ -9,7 +9,7 @@ from Bio import SeqIO
 import plotly
 import plotly.graph_objs as go
 from logging_module import log
-from IPython import embed
+
 ####################
 ## Define classes ##
 ####################
@@ -1026,6 +1026,7 @@ def multifast5reader(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size):
 
     result_plotting(ChannelDict)
     FastStats(ChannelDict)
+    os._exit(0)
 
 
 
