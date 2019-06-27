@@ -946,7 +946,7 @@ def fast5module(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size):
 
     result_plotting(ChannelDict)
     FastStats(ChannelDict)
-    os._exit(0)
+
 
 
 def multifast5reader(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size):    
@@ -1026,7 +1026,7 @@ def multifast5reader(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size):
 
     result_plotting(ChannelDict)
     FastStats(ChannelDict)
-
+    os._exit(0)
 
 
 def summary_module(fqfolder, summary_table_file, size):
