@@ -277,7 +277,6 @@ def FastStats(ChannelOut, GCTable = None):
     plotly.offline.plot(fig, filename=out_html_2, auto_open=False, show_link=False, config=config)
     HeatTrigger2(out_html_2)
     log.info('Finish')
-    sys.exit()
 
 
 def HeatTrigger(html_file):
@@ -946,7 +945,8 @@ def fast5module(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size):
         fastq_writer(tmp_dir)
 
     result_plotting(ChannelDict)
-    FastStats(ChannelDict)    
+    FastStats(ChannelDict)
+    os._exit(0)
 
 
 def multifast5reader(work_dir, file_folder, prefix, tmp_dir, Fast_flag, size):    
